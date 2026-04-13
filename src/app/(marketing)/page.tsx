@@ -29,7 +29,7 @@ export default function Home() {
 
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-x-8 gap-y-2 md:gap-y-4">
-            <h1 className="text-[10rem] md:text-[14rem] leading-none font-black italic tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-primary-300 via-primary-500 to-primary-700 drop-shadow-sm select-none pr-4 md:pr-8">
+            <h1 className="text-[10rem] md:text-[14rem] leading-none font-black italic tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-primary-300 via-primary-500 to-primary-700 drop-shadow-sm select-none shrink-0 pr-12 md:pr-16 -mr-12 md:-mr-16">
               GO
             </h1>
 
