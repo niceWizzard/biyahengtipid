@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles, MapPin, Route, Navigation, ShieldCheck } from "lucide-react";
 
+
+
 export default function Home() {
   return (
     <>

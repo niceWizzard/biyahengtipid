@@ -1,6 +1,28 @@
 import { Check, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Metadata } from 'next';
+
+
+export const metadata: Metadata = {
+    title: "BiyahengTipid - Plan Pricing",
+    description: "Check our pricing plans to find the perfect one for your needs.",
+    openGraph: {
+        title: "BiyahengTipid - Plan Pricing",
+        description: "Check our pricing plans to find the perfect one for your needs.",
+        type: "website",
+        locale: "en_PH",
+        siteName: "BiyahengTipid",
+        images: [
+            {
+                url: "/img/biyaheng_tipid_brand.png",
+                width: 1200,
+                height: 630,
+                alt: "BiyahengTipid - Plan Pricing",
+            },
+        ],
+    },
+};
 
 export default function PricingPage() {
     return (
