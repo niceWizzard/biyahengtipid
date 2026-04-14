@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 export default function Footer() {
     return (
@@ -15,17 +16,17 @@ export default function Footer() {
                     <div className="flex flex-col gap-3">
                         <h3 className="font-semibold text-sm">Product</h3>
                         <div className="flex flex-col gap-2">
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Testimonials</Link>
                         </div>
                     </div>
                     <div className="flex flex-col gap-3">
                         <h3 className="font-semibold text-sm">Company</h3>
                         <div className="flex flex-col gap-2">
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About Us</a>
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</a>
-                            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</a>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About Us</Link>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
+                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
                         </div>
                     </div>
                 </div>

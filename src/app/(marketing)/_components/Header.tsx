@@ -11,6 +11,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer";
 import { MenuIcon } from "lucide-react";
+import Link from "next/link";
 
 export default function Header() {
     return (
@@ -26,14 +27,15 @@ export default function Header() {
                 <nav className="hidden sm:block">
                     <ul className="flex items-center gap-4">
                         <li>
-                            <a href="#" className={buttonVariants({ variant: "ghost" })}>
+                            <Link href="#" className={buttonVariants({ variant: "ghost" })}>
                                 Login
-                            </a>
+                            </Link>
                         </li>
+
                         <li>
-                            <a href="#" className={`${buttonVariants({ variant: "default" })} rounded-full shadow-sm`}>
+                            <Link href="#" className={`${buttonVariants({ variant: "default" })} rounded-full shadow-sm`}>
                                 Get Started for Free
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </nav>
@@ -55,12 +57,12 @@ export default function Header() {
                                 </DrawerDescription>
                             </DrawerHeader>
                             <div className="px-4 py-8 flex flex-col gap-4">
-                                <a href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
+                                <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Login
-                                </a>
-                                <a href="#" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
+                                </Link>
+                                <Link href="#" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
                                     Get Started for Free
-                                </a>
+                                </Link>
                             </div>
                             <DrawerFooter className="pt-2">
                                 <DrawerClose className={buttonVariants({ variant: "outline", className: "w-full" })}>
