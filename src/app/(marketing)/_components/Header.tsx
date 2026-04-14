@@ -18,7 +18,9 @@ export default function Header() {
             <div className="container mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <h1 className="text-2xl font-extrabold tracking-tighter">
-                        Biyaheng<span className="text-primary">Tipid</span>
+                        <Link href="/">
+                            Biyaheng<span className="text-primary">Tipid</span>
+                        </Link>
                     </h1>
                 </div>
 
