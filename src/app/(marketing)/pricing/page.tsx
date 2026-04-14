@@ -5,11 +5,18 @@ import { Metadata } from 'next';
 
 
 export const metadata: Metadata = {
-    title: "BiyahengTipid - Plan Pricing",
-    description: "Check our pricing plans to find the perfect one for your needs.",
+    title: "Pricing Plans | BiyahengTipid",
+    description: "Choose the perfect BiyahengTipid plan for your travel needs. Explore our Free tier for casual travelers and our Pro plan for unlimited route optimization.",
+    keywords: [
+        "BiyahengTipid pricing",
+        "route optimization pricing",
+        "trip planner cost",
+        "travel app Philippines",
+        "navigation app subscription"
+    ],
     openGraph: {
-        title: "BiyahengTipid - Plan Pricing",
-        description: "Check our pricing plans to find the perfect one for your needs.",
+        title: "Pricing Plans | BiyahengTipid",
+        description: "Find the perfect route optimization plan to save fuel and time on your road trips.",
         type: "website",
         locale: "en_PH",
         siteName: "BiyahengTipid",
@@ -18,9 +25,15 @@ export const metadata: Metadata = {
                 url: "/img/biyaheng_tipid_brand.png",
                 width: 1200,
                 height: 630,
-                alt: "BiyahengTipid - Plan Pricing",
+                alt: "BiyahengTipid - Pricing Plans",
             },
         ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Pricing Plans | BiyahengTipid",
+        description: "Choose the perfect plan for your travel and route optimization needs.",
+        images: ["/img/biyaheng_tipid_brand.png"],
     },
 };
 
