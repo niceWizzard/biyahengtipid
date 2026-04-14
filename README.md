@@ -9,6 +9,7 @@
 ### ⚙️ Under the Hood
 
 The application utilizes reliable routing engines to deliver accurate estimates:
+
 - **[OpenRouteService API](https://openrouteservice.org/)**: Powers the robust routing calculations.
 - **[OSRM (Open Source Routing Machine)](https://project-osrm.org/)**: The high-performance backend routing engine for rapid travel time and distance computations.
 
@@ -24,16 +25,18 @@ The application utilizes reliable routing engines to deliver accurate estimates:
 This is a [Next.js](https://nextjs.org/) project bootstrapped with `create-next-app` and configured to run with `bun`.
 
 First, make sure to install dependencies (if you haven't already):
+
 ```bash
 bun install
 ```
 
 Then, run the development server:
+
 ```bash
 bun dev
 ```
 
-*(Alternatively, you can use `npm run dev`, `yarn dev`, or `pnpm dev`)*
+_(Alternatively, you can use `npm run dev`, `yarn dev`, or `pnpm dev`)_
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the application in action.
 

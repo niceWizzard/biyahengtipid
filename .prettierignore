@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+public
+.env
+.env.local
+AGENTS.md
+CLAUDE.md

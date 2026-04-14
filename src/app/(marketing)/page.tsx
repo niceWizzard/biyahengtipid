@@ -1,8 +1,11 @@
-
-import Link from "next/link";
-import { ArrowRight, MapPin, Route, Navigation, ShieldCheck } from "lucide-react";
-
-
+import Link from 'next/link';
+import {
+  ArrowRight,
+  MapPin,
+  Route,
+  Navigation,
+  ShieldCheck,
+} from 'lucide-react';
 
 export default function Home() {
   return (
@@ -25,140 +28,170 @@ export default function Home() {
           100% { top: 100%; opacity: 0; }
         }
       `}</style>
-      <div className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center overflow-hidden bg-background">
+      <div className="bg-background relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_2px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]"></div>
+        <div className="bg-background absolute inset-0 mask-[radial-gradient(circle_at_center,transparent_0%,black_80%)]"></div>
 
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_2px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]"></div>
-        <div className="absolute inset-0 bg-background mask-[radial-gradient(circle_at_center,transparent_0%,black_80%)]"></div>
+        <div className="bg-primary/20 pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 mix-blend-screen blur-[80px] md:h-[600px] md:w-[600px] md:blur-[120px] dark:mix-blend-color-dodge"></div>
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-primary/20 rounded-full blur-[80px] md:blur-[120px] opacity-60 pointer-events-none mix-blend-screen dark:mix-blend-color-dodge"></div>
-
-        <section className="container relative z-10 mx-auto px-4 flex flex-col items-center justify-center space-y-10 text-center pb-16 pt-8 md:pt-0">
-
-
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-x-8 gap-y-2 md:gap-y-4">
-            <h1 className="text-[10rem] md:text-[14rem] leading-none font-black italic tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-primary-300 via-primary-500 to-primary-700 drop-shadow-sm select-none shrink-0 pr-12 md:pr-16 -mr-12 md:-mr-16">
+        <section className="relative z-10 container mx-auto flex flex-col items-center justify-center space-y-10 px-4 pt-8 pb-16 text-center md:pt-0">
+          <div className="flex flex-col items-center justify-center gap-x-8 gap-y-2 md:flex-row md:gap-y-4">
+            <h1 className="from-primary-300 via-primary-500 to-primary-700 -mr-12 shrink-0 bg-linear-to-br bg-clip-text pr-12 text-[10rem] leading-none font-black tracking-tighter text-transparent italic drop-shadow-sm select-none md:-mr-16 md:pr-16 md:text-[14rem]">
               GO
             </h1>
 
-            <div className="flex flex-col text-center md:text-left justify-center mt-2 md:mt-0">
-              <h2 className="text-6xl md:text-8xl font-black italic tracking-tight text-foreground leading-[0.85] origin-center md:origin-left animate-[textFocus1_4s_infinite_ease-in-out]">
+            <div className="mt-2 flex flex-col justify-center text-center md:mt-0 md:text-left">
+              <h2 className="text-foreground origin-center animate-[textFocus1_4s_infinite_ease-in-out] text-6xl leading-[0.85] font-black tracking-tight italic md:origin-left md:text-8xl">
                 FURTHER
               </h2>
-              <div className="flex items-center justify-center md:justify-start my-4 md:my-5">
-                <div className="h-2 w-16 md:w-24 bg-primary rounded-full"></div>
-                <div className="h-2 w-2 bg-primary rounded-full ml-2"></div>
+              <div className="my-4 flex items-center justify-center md:my-5 md:justify-start">
+                <div className="bg-primary h-2 w-16 rounded-full md:w-24"></div>
+                <div className="bg-primary ml-2 h-2 w-2 rounded-full"></div>
               </div>
-              <h2 className="text-6xl md:text-8xl font-black italic tracking-tight text-foreground leading-[0.85] origin-center md:origin-left animate-[textFocus2_4s_infinite_ease-in-out]">
+              <h2 className="text-foreground origin-center animate-[textFocus2_4s_infinite_ease-in-out] text-6xl leading-[0.85] font-black tracking-tight italic md:origin-left md:text-8xl">
                 FOR LESS
               </h2>
             </div>
           </div>
 
-          <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Optimize your local commutes, deliveries, or road trips perfectly. Discover smarter driving routes, efficient waypoint ordering, and save massively on fuel and time.
+          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed md:text-xl">
+            Optimize your local commutes, deliveries, or road trips perfectly.
+            Discover smarter driving routes, efficient waypoint ordering, and
+            save massively on fuel and time.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
-            <Link href="/auth/login" className="inline-flex items-center justify-center group h-14 rounded-full bg-primary text-primary-foreground px-8 text-lg font-medium shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
+          <div className="flex flex-col items-center gap-4 pt-6 sm:flex-row">
+            <Link
+              href="/auth/login"
+              className="group bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40 inline-flex h-14 items-center justify-center rounded-full px-8 text-lg font-medium shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
               Get Started
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link href="#features" className="inline-flex items-center justify-center h-14 rounded-full px-8 text-lg font-medium border border-input hover:bg-accent hover:text-accent-foreground transition-all duration-300 bg-background/50 backdrop-blur-sm">
+            <Link
+              href="#features"
+              className="border-input hover:bg-accent hover:text-accent-foreground bg-background/50 inline-flex h-14 items-center justify-center rounded-full border px-8 text-lg font-medium backdrop-blur-sm transition-all duration-300"
+            >
               Learn More
             </Link>
           </div>
         </section>
       </div>
 
-      <section className="py-24 bg-accent/5 overflow-hidden border-t">
+      <section className="bg-accent/5 overflow-hidden border-t py-24">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
             {/* Left side: Animated Map Nodes */}
-            <div className="relative max-w-md mx-auto lg:mx-0 w-full px-2 md:px-0">
+            <div className="relative mx-auto w-full max-w-md px-2 md:px-0 lg:mx-0">
               <div className="grid grid-cols-[3rem_1fr] gap-x-6 gap-y-10">
                 {/* Connecting vertical line */}
-                <div className="col-start-1 row-start-1 row-end-3 flex justify-center relative pointer-events-none z-0">
+                <div className="pointer-events-none relative z-0 col-start-1 row-start-1 row-end-3 flex justify-center">
                   {/* Spans exactly row 1 and row 2. Gap is gap-y-10 (40px). 
                       To reach the center of row 3's icon (24px down), we extend the bottom by 40+24 = 64px = bottom-16! */}
-                  <div className="absolute top-[24px] -bottom-16 w-0.5 bg-border overflow-hidden rounded-full">
-                    <div className="w-full h-1/3 bg-primary rounded-full absolute left-0 animate-[travelDrop_2.5s_linear_infinite]"></div>
+                  <div className="bg-border absolute top-[24px] -bottom-16 w-0.5 overflow-hidden rounded-full">
+                    <div className="bg-primary absolute left-0 h-1/3 w-full animate-[travelDrop_2.5s_linear_infinite] rounded-full"></div>
                   </div>
                 </div>
 
                 {/* Node 1 */}
-                <div className="relative z-10 col-start-1 row-start-1 w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center shadow-sm transition-transform hover:scale-110">
-                  <span className="absolute w-full h-full rounded-full bg-primary/20 animate-ping"></span>
-                  <MapPin className="w-5 h-5 text-primary" />
+                <div className="bg-background border-primary relative z-10 col-start-1 row-start-1 flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-sm transition-transform hover:scale-110">
+                  <span className="bg-primary/20 absolute h-full w-full animate-ping rounded-full"></span>
+                  <MapPin className="text-primary h-5 w-5" />
                 </div>
-                <div className="pt-2 col-start-2 row-start-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-xl">Your Origin</h4>
+                <div className="col-start-2 row-start-1 pt-2">
+                  <div className="mb-1 flex items-center gap-2">
+                    <h4 className="text-xl font-bold">Your Origin</h4>
                   </div>
-                  <div className="bg-background border p-4 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
-                    <p className="text-sm text-muted-foreground leading-relaxed">Start your journey with flexible dates to find the best departure window.</p>
+                  <div className="bg-background rounded-xl border p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Start your journey with flexible dates to find the best
+                      departure window.
+                    </p>
                   </div>
                 </div>
 
                 {/* Node 2 */}
-                <div className="relative z-10 col-start-1 row-start-2 w-12 h-12 rounded-full bg-background border-2 border-muted-foreground/30 flex items-center justify-center shadow-sm transition-transform hover:scale-110">
-                  <Route className="w-5 h-5 text-muted-foreground" />
+                <div className="bg-background border-muted-foreground/30 relative z-10 col-start-1 row-start-2 flex h-12 w-12 items-center justify-center rounded-full border-2 shadow-sm transition-transform hover:scale-110">
+                  <Route className="text-muted-foreground h-5 w-5" />
                 </div>
-                <div className="pt-2 col-start-2 row-start-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-xl">Smart Waypoint Priority</h4>
-                    <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider">Optimized</span>
+                <div className="col-start-2 row-start-2 pt-2">
+                  <div className="mb-1 flex items-center gap-2">
+                    <h4 className="text-xl font-bold">
+                      Smart Waypoint Priority
+                    </h4>
+                    <span className="rounded-full bg-green-500/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-green-500 uppercase">
+                      Optimized
+                    </span>
                   </div>
-                  <div className="bg-background border p-4 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
-                    <p className="text-sm text-muted-foreground leading-relaxed">We re-order your stops using Open Route Service to minimize driving time and distance.</p>
+                  <div className="bg-background rounded-xl border p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      We re-order your stops using Open Route Service to
+                      minimize driving time and distance.
+                    </p>
                   </div>
                 </div>
 
                 {/* Node 3 */}
-                <div className="relative z-10 col-start-1 row-start-3 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.5)] transition-transform hover:scale-110">
-                  <Navigation className="w-5 h-5 text-primary-foreground animate-bounce" />
+                <div className="bg-primary relative z-10 col-start-1 row-start-3 flex h-12 w-12 items-center justify-center rounded-full shadow-[0_0_15px_rgba(var(--primary),0.5)] transition-transform hover:scale-110">
+                  <Navigation className="text-primary-foreground h-5 w-5 animate-bounce" />
                 </div>
-                <div className="pt-2 col-start-2 row-start-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-xl text-primary">Destination Reached</h4>
+                <div className="col-start-2 row-start-3 pt-2">
+                  <div className="mb-1 flex items-center gap-2">
+                    <h4 className="text-primary text-xl font-bold">
+                      Destination Reached
+                    </h4>
                   </div>
-                  <div className="bg-primary/5 border border-primary/20 p-4 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
-                    <p className="text-sm text-foreground font-medium leading-relaxed">Arrive at your final destination, having saved up to 40% on travel time and fuel costs.</p>
+                  <div className="bg-primary/5 border-primary/20 rounded-xl border p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
+                    <p className="text-foreground text-sm leading-relaxed font-medium">
+                      Arrive at your final destination, having saved up to 40%
+                      on travel time and fuel costs.
+                    </p>
                   </div>
                 </div>
-
               </div>
             </div>
 
             {/* Right side: Text details */}
             <div className="flex flex-col justify-center space-y-8 lg:pl-10">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.1]">
-                Optimize the Route,<br />
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-primary-400 to-primary-700">Maximize Efficiency.</span>
+              <h2 className="text-foreground text-4xl leading-[1.1] font-black tracking-tight md:text-5xl lg:text-6xl">
+                Optimize the Route,
+                <br />
+                <span className="from-primary-400 to-primary-700 bg-linear-to-r bg-clip-text text-transparent">
+                  Maximize Efficiency.
+                </span>
               </h2>
 
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Powered by Open Route Service. Our advanced algorithm doesn&apos;t just draw a straight line; it evaluates road networks, turn restrictions, and optimal waypoint sequencing to build the ultimate efficient road trip itinerary.
+              <p className="text-muted-foreground text-lg leading-relaxed md:text-xl">
+                Powered by Open Route Service. Our advanced algorithm
+                doesn&apos;t just draw a straight line; it evaluates road
+                networks, turn restrictions, and optimal waypoint sequencing to
+                build the ultimate efficient road trip itinerary.
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-6 pt-4">
-                <div className="flex items-start gap-4 p-4 rounded-2xl bg-background border shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
-                  <div className="mt-0.5 bg-primary/10 p-2.5 rounded-xl shrink-0">
-                    <Route className="w-5 h-5 text-primary" />
+              <div className="grid gap-6 pt-4 sm:grid-cols-2">
+                <div className="bg-background hover:border-primary/50 flex items-start gap-4 rounded-2xl border p-4 shadow-sm transition-all hover:shadow-md">
+                  <div className="bg-primary/10 mt-0.5 shrink-0 rounded-xl p-2.5">
+                    <Route className="text-primary h-5 w-5" />
                   </div>
                   <div>
-                    <h5 className="font-bold mb-1.5">Waypoint Optimization</h5>
-                    <p className="text-sm text-muted-foreground">Automatically sequence multiple stops to minimize total travel time.</p>
+                    <h5 className="mb-1.5 font-bold">Waypoint Optimization</h5>
+                    <p className="text-muted-foreground text-sm">
+                      Automatically sequence multiple stops to minimize total
+                      travel time.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-2xl bg-background border shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
-                  <div className="mt-0.5 bg-primary/10 p-2.5 rounded-xl shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-primary" />
+                <div className="bg-background hover:border-primary/50 flex items-start gap-4 rounded-2xl border p-4 shadow-sm transition-all hover:shadow-md">
+                  <div className="bg-primary/10 mt-0.5 shrink-0 rounded-xl p-2.5">
+                    <ShieldCheck className="text-primary h-5 w-5" />
                   </div>
                   <div>
-                    <h5 className="font-bold mb-1.5">Reliable Data</h5>
-                    <p className="text-sm text-muted-foreground">Backed by real-world road networks and highly accurate routing engines.</p>
+                    <h5 className="mb-1.5 font-bold">Reliable Data</h5>
+                    <p className="text-muted-foreground text-sm">
+                      Backed by real-world road networks and highly accurate
+                      routing engines.
+                    </p>
                   </div>
                 </div>
               </div>
