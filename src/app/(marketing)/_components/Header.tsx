@@ -1,4 +1,3 @@
-import * as React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import {
     Drawer,
@@ -31,7 +30,11 @@ export default function Header() {
                                 Login
                             </Link>
                         </li>
-
+                        <li>
+                            <Link href="#" className={buttonVariants({ variant: "ghost" })}>
+                                Pricing
+                            </Link>
+                        </li>
                         <li>
                             <Link href="#" className={`${buttonVariants({ variant: "default" })} rounded-full shadow-sm`}>
                                 Get Started for Free
@@ -59,6 +62,9 @@ export default function Header() {
                             <div className="px-4 py-8 flex flex-col gap-4">
                                 <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Login
+                                </Link>
+                                <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
+                                    Pricing
                                 </Link>
                                 <Link href="#" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
                                     Get Started for Free
