@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import { ArrowRight, Sparkles, MapPin, Route, Navigation, ShieldCheck } from "lucide-react";
+import { ArrowRight, MapPin, Route, Navigation, ShieldCheck } from "lucide-react";
 
 
 
@@ -138,7 +138,7 @@ export default function Home() {
               </h2>
 
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Powered by Open Route Service. Our advanced algorithm doesn't just draw a straight line; it evaluates road networks, turn restrictions, and optimal waypoint sequencing to build the ultimate efficient road trip itinerary.
+                Powered by Open Route Service. Our advanced algorithm doesn&apos;t just draw a straight line; it evaluates road networks, turn restrictions, and optimal waypoint sequencing to build the ultimate efficient road trip itinerary.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-6 pt-4">

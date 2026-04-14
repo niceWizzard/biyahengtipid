@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ArrowRight, Route, Loader2, Mail, Lock } from 'lucide-react'
+import { ArrowRight, Loader2, Mail, Lock } from 'lucide-react'
 
 const loginFormSchema = z.object({
     email: z.email("Please enter a valid email address").trim(),
@@ -163,7 +163,7 @@ export default function LoginClient() {
                             </div>
 
                             <div className="text-center text-sm">
-                                <span className="text-muted-foreground">Don't have an account? </span>
+                                <span className="text-muted-foreground">Don&apos;t have an account? </span>
                                 <Link href="/register" className="font-semibold hover:underline underline-offset-4">
                                     Sign up
                                 </Link>
