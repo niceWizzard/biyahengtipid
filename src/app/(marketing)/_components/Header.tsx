@@ -28,7 +28,7 @@ export default function Header() {
                 <nav className="hidden sm:block">
                     <ul className="flex items-center gap-4">
                         <li>
-                            <Link href="#" className={buttonVariants({ variant: "ghost" })}>
+                            <Link href="/login" className={buttonVariants({ variant: "ghost" })}>
                                 Login
                             </Link>
                         </li>
@@ -38,7 +38,7 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="#" className={`${buttonVariants({ variant: "default" })} rounded-full shadow-sm`}>
+                            <Link href="/register" className={`${buttonVariants({ variant: "default" })} rounded-full shadow-sm`}>
                                 Get Started for Free
                             </Link>
                         </li>
@@ -62,13 +62,13 @@ export default function Header() {
                                 </DrawerDescription>
                             </DrawerHeader>
                             <div className="px-4 py-8 flex flex-col gap-4">
-                                <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
+                                <Link href="/login" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Login
                                 </Link>
                                 <Link href="/pricing" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Pricing
                                 </Link>
-                                <Link href="#" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
+                                <Link href="/register" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
                                     Get Started for Free
                                 </Link>
                             </div>
