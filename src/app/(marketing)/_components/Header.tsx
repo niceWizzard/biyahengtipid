@@ -31,7 +31,7 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="#" className={buttonVariants({ variant: "ghost" })}>
+                            <Link href="/pricing" className={buttonVariants({ variant: "ghost" })}>
                                 Pricing
                             </Link>
                         </li>
@@ -63,7 +63,7 @@ export default function Header() {
                                 <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Login
                                 </Link>
-                                <Link href="#" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
+                                <Link href="/pricing" className={buttonVariants({ variant: "ghost", className: "w-full justify-start text-lg" })}>
                                     Pricing
                                 </Link>
                                 <Link href="#" className={`${buttonVariants({ variant: "default", className: "w-full text-lg" })} rounded-full shadow-sm`}>
