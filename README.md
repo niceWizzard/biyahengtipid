@@ -1,6 +1,6 @@
 # 🚐 Biyaheng Tipid
 
-> A travel cost optimizer app that helps travelers plan their trips efficiently and within budget.
+> A travel cost optimizer app that helps travelers plan their trips efficiently and within budget. Visit [Biyaheng Tipid](https://biyahengtipid.vercel.app)
 
 ## 🌟 Overview
 
