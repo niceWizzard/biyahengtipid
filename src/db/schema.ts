@@ -1,0 +1,3 @@
+
+
+export { usersTable } from './schema/user';
