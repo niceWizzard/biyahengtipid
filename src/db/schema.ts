@@ -1,3 +1,3 @@
 
 
-export { usersTable } from './schema/user';
+export { users,accounts, sessions } from './schema/user';
