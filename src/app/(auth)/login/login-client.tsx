@@ -128,12 +128,6 @@ export default function LoginClient() {
                         <FieldLabel className="text-foreground/80">
                           Password
                         </FieldLabel>
-                        <Link
-                          href="/forgot-password"
-                          className="hover:text-primary/80 text-xs font-medium transition-colors"
-                        >
-                          Forgot password?
-                        </Link>
                       </div>
                       <div className="relative mt-2">
                         <Lock className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2" />
@@ -152,6 +146,12 @@ export default function LoginClient() {
                     </Field>
                   )}
                 />
+                <Link
+                  href="/forgot-password"
+                  className="self-end text-xs font-medium underline-offset-4 transition-colors hover:underline"
+                >
+                  Forgot password?
+                </Link>
               </FieldGroup>
 
               <Button
