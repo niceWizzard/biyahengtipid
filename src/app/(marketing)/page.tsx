@@ -62,7 +62,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center gap-4 pt-6 sm:flex-row">
             <Link
-              href="/auth/login"
+              href="/login"
               className="group bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40 inline-flex h-14 items-center justify-center rounded-full px-8 text-lg font-medium shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
               Get Started
