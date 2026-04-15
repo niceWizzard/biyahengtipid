@@ -64,6 +64,9 @@ export default function LoginClient() {
       <section className="animate-in fade-in slide-in-from-bottom-4 relative z-10 mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-8 duration-700 ease-out">
         {/* Logo / Brand Header */}
         <div className="mb-4 flex flex-col items-center justify-center space-y-4 text-center">
+          <Link href="/" className="text-2xl font-bold tracking-tight">
+            Biyaheng<span className="text-primary">Tipid</span>
+          </Link>
           <div>
             <h2 className="text-foreground mt-2 text-3xl font-black tracking-tight">
               Welcome Back

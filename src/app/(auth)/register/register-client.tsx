@@ -82,6 +82,9 @@ export default function RegisterClient() {
         {/* Logo / Brand Header */}
         <div className="mb-4 flex flex-col items-center justify-center space-y-4 text-center">
           <div>
+            <Link href="/" className="text-2xl font-bold tracking-tight">
+              Biyaheng<span className="text-primary">Tipid</span>
+            </Link>
             <h2 className="text-foreground mt-2 text-3xl font-black tracking-tight">
               Create an Account
             </h2>
