@@ -104,6 +104,14 @@ export default function PricingPage() {
                     <Check className="text-primary h-4 w-4" />
                   </div>
                   <span className="text-foreground/80 font-medium">
+                    Up to 10 Stops per Trip
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="bg-primary/10 rounded-full p-1">
+                    <Check className="text-primary h-4 w-4" />
+                  </div>
+                  <span className="text-foreground/80 font-medium">
                     3 Optimize per Day
                   </span>
                 </li>
@@ -158,6 +166,14 @@ export default function PricingPage() {
                     </div>
                     <span className="text-foreground/80 font-medium">
                       Unlimited Navigation
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="bg-primary/10 rounded-full p-1">
+                      <Check className="text-primary h-4 w-4" />
+                    </div>
+                    <span className="text-foreground/80 font-medium">
+                      Up to 50 Stops per Trip
                     </span>
                   </li>
                   <li className="flex items-center gap-3">
