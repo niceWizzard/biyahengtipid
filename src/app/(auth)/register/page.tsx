@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import RegisterClient from './register-client';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Register - BiyahengTipid',
@@ -12,6 +15,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect('/dashboard');
+  }
   return <RegisterClient />;
 }

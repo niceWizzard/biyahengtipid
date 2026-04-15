@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import LoginClient from './login-client';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Login - BiyahengTipid',
@@ -12,6 +15,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect('/dashboard');
+  }
+
   return <LoginClient />;
 }

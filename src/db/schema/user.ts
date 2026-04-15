@@ -17,9 +17,7 @@ export const users = pgTable(
       .timestamp('updated_at', { precision: 6, withTimezone: true })
       .notNull(),
   },
-  (table) => [
-    check('username_min_length', sql`length(${table.username}) >= 3`),
-  ],
+  (table) => [check('username_min_length', sql`length(${table.username}) >= 3`)]
 );
 
 export const sessions = pgTable('sessions', {

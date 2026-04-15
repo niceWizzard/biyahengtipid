@@ -7,3 +7,5 @@ public
 .env.local
 AGENTS.md
 CLAUDE.md
+.agents/*
+skills-lock.json

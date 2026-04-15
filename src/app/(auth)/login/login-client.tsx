@@ -22,6 +22,8 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight, Loader2, Mail, Lock } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const loginFormSchema = z.object({
   email: z.email('Please enter a valid email address').trim(),
@@ -32,6 +34,7 @@ type LoginFormSchema = z.infer<typeof loginFormSchema>;
 
 export default function LoginClient() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -42,10 +45,19 @@ export default function LoginClient() {
 
   const onSubmit = async (data: LoginFormSchema) => {
     setIsLoading(true);
-    console.log(data);
-    // Simulate network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    const { error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password,
+      callbackURL: `${window.location.origin}/dashboard`,
+    });
+    if (error) {
+      form.setError('root', {
+        message: error.message ?? 'Invalid email or password.',
+      });
+      setIsLoading(false);
+      return;
+    }
+    router.push('/dashboard');
   };
 
   return (
@@ -150,6 +162,12 @@ export default function LoginClient() {
                   Forgot password?
                 </Link>
               </FieldGroup>
+
+              {form.formState.errors.root && (
+                <p className="text-destructive -mt-2 text-center text-sm font-medium">
+                  {form.formState.errors.root.message}
+                </p>
+              )}
 
               <Button
                 type="submit"

@@ -22,6 +22,8 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight, Loader2, Mail, Lock, User } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const registerFormSchema = z
   .object({
@@ -47,6 +49,7 @@ type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 
 export default function RegisterClient() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -59,10 +62,20 @@ export default function RegisterClient() {
 
   const onSubmit = async (data: RegisterFormSchema) => {
     setIsLoading(true);
-    console.log(data);
-    // Simulate network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    const { error } = await authClient.signUp.email({
+      name: data.username,
+      email: data.email,
+      password: data.password,
+      callbackURL: `${window.location.origin}/dashboard`,
+    });
+    if (error) {
+      form.setError('root', {
+        message: error.message ?? 'Registration failed. Please try again.',
+      });
+      setIsLoading(false);
+      return;
+    }
+    router.push('/dashboard');
   };
 
   return (
@@ -210,6 +223,12 @@ export default function RegisterClient() {
                   )}
                 />
               </FieldGroup>
+
+              {form.formState.errors.root && (
+                <p className="text-destructive -mt-2 text-center text-sm font-medium">
+                  {form.formState.errors.root.message}
+                </p>
+              )}
 
               <Button
                 type="submit"
