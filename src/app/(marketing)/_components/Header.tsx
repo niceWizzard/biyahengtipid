@@ -73,30 +73,36 @@ export default function Header() {
                 </DrawerDescription>
               </DrawerHeader>
               <div className="flex flex-col gap-4 px-4 py-8">
-                <Link
-                  href="/login"
-                  className={buttonVariants({
-                    variant: 'ghost',
-                    className: 'w-full justify-start text-lg',
-                  })}
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/pricing"
-                  className={buttonVariants({
-                    variant: 'ghost',
-                    className: 'w-full justify-start text-lg',
-                  })}
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/register"
-                  className={`${buttonVariants({ variant: 'default', className: 'w-full text-lg' })} rounded-full shadow-sm`}
-                >
-                  Get Started for Free
-                </Link>
+                <DrawerClose asChild>
+                  <Link
+                    href="/login"
+                    className={buttonVariants({
+                      variant: 'ghost',
+                      className: 'w-full justify-start text-lg',
+                    })}
+                  >
+                    Login
+                  </Link>
+                </DrawerClose>
+                <DrawerClose asChild>
+                  <Link
+                    href="/pricing"
+                    className={buttonVariants({
+                      variant: 'ghost',
+                      className: 'w-full justify-start text-lg',
+                    })}
+                  >
+                    Pricing
+                  </Link>
+                </DrawerClose>
+                <DrawerClose asChild>
+                  <Link
+                    href="/register"
+                    className={`${buttonVariants({ variant: 'default', className: 'w-full text-lg' })} rounded-full shadow-sm`}
+                  >
+                    Get Started for Free
+                  </Link>
+                </DrawerClose>
               </div>
               <DrawerFooter className="pt-2">
                 <DrawerClose
