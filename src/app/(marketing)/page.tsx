@@ -62,7 +62,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center gap-4 pt-6 sm:flex-row">
             <Link
-              href="/login"
+              href="/register"
               className="group bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40 inline-flex h-14 items-center justify-center rounded-full px-8 text-lg font-medium shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
               Get Started
@@ -78,7 +78,10 @@ export default function Home() {
         </section>
       </div>
 
-      <section className="bg-accent/5 overflow-hidden border-t py-24">
+      <section
+        className="bg-accent/5 overflow-hidden border-t py-24"
+        id="features"
+      >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
             {/* Left side: Animated Map Nodes */}
