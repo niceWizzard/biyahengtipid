@@ -185,14 +185,16 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
               <ChevronDown className="text-muted-foreground size-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-semibold">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs font-normal">
-                    {user.email}
-                  </span>
-                </div>
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">{user.name}</span>
+                    <span className="text-muted-foreground truncate text-xs font-normal">
+                      {user.email}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem id="profile-menu-item" disabled>
@@ -205,14 +207,16 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                id="sign-out-menu-item"
-                variant="destructive"
-                onClick={handleSignOut}
-              >
-                <LogOut />
-                Sign Out
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  id="sign-out-menu-item"
+                  variant="destructive"
+                  onClick={handleSignOut}
+                >
+                  <LogOut />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
