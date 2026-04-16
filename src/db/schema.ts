@@ -1,1 +1,1 @@
-export { users, accounts, sessions } from './schema/user';
+export { users, accounts, sessions, verifications } from './schema/user';

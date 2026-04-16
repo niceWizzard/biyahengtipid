@@ -76,7 +76,7 @@ export default function RegisterClient() {
       setIsLoading(false);
       return;
     }
-    router.push('/dashboard');
+    router.push('/verify-email');
   };
 
   return (

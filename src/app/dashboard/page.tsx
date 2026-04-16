@@ -1,6 +1,5 @@
 import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { requireEmailVerified } from '@/dal/emailVerified';
 import DashboardClient from './dashboard-client';
 
 export const metadata = {
@@ -9,13 +8,7 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect('/login');
-  }
+  const session = await requireEmailVerified();
 
   return <DashboardClient user={session.user} />;
 }

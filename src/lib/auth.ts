@@ -5,7 +5,16 @@ import { db } from '@/db';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg', schema }),
-  emailAndPassword: { enabled: true },
+  emailAndPassword: {
+    enabled: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      // TODO: Replace with an actual email provider later
+      console.log(`\n\n[EMAIL] 📧 Verify email for ${user.email}:\n➡️  ${url}\n\n`);
+    },
+  },
   user: {
     modelName: 'users',
     additionalFields: {
@@ -22,4 +31,7 @@ export const auth = betterAuth({
   account: {
     modelName: 'accounts',
   },
+  verification: {
+    modelName: "verifications"
+  }
 });

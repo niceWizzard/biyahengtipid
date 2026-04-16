@@ -50,13 +50,25 @@ export default function LoginClient() {
       password: data.password,
       callbackURL: `${window.location.origin}/dashboard`,
     });
+
     if (error) {
+      setIsLoading(false);
+      // Better-auth returns 403 when email is not verified
+      if (error.status === 403) {
+        form.setError('root', {
+          message: 'Please verify your email address to sign in.',
+        });
+        // We will push them to the verify-email page where they can resend it
+        router.push('/verify-email');
+        return;
+      }
+
       form.setError('root', {
         message: error.message ?? 'Invalid email or password.',
       });
-      setIsLoading(false);
       return;
     }
+    
     router.push('/dashboard');
   };
 
