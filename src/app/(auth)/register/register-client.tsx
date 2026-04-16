@@ -63,6 +63,7 @@ export default function RegisterClient() {
   const onSubmit = async (data: RegisterFormSchema) => {
     setIsLoading(true);
     const { error } = await authClient.signUp.email({
+      username: data.username,
       name: data.username,
       email: data.email,
       password: data.password,

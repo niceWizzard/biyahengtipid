@@ -1,6 +1,5 @@
 'use client';
 
-import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -36,16 +35,10 @@ import {
   Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
+import { auth } from '@/lib/auth';
+import { authClient } from '@/lib/auth-client';
 
-type SessionUser = {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  emailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
+type SessionUser = typeof auth.$Infer.Session.user;
 
 const stats = [
   {
@@ -176,11 +169,14 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
               }
             >
               <Avatar size="sm">
-                <AvatarImage src={user.image ?? undefined} alt={user.name} />
-                <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                <AvatarImage
+                  src={user.image ?? undefined}
+                  alt={user.username}
+                />
+                <AvatarFallback>{getInitials(user.username)}</AvatarFallback>
               </Avatar>
               <span className="hidden max-w-32 truncate text-sm font-medium md:block">
-                {user.name}
+                {user.username}
               </span>
               <ChevronDown className="text-muted-foreground size-3.5" />
             </DropdownMenuTrigger>
@@ -188,7 +184,9 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
               <DropdownMenuGroup>
                 <DropdownMenuLabel>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-semibold">{user.name}</span>
+                    <span className="text-sm font-semibold">
+                      {user.username}
+                    </span>
                     <span className="text-muted-foreground truncate text-xs font-normal">
                       {user.email}
                     </span>
@@ -228,7 +226,7 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
         <div className="mb-8 flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Welcome back, {user.name.split(' ')[0]} 👋
+              Welcome back, {user.username.split(' ')[0]} 👋
             </h1>
           </div>
           <p className="text-muted-foreground text-sm sm:text-base">
@@ -310,13 +308,18 @@ export default function DashboardClient({ user }: { user: SessionUser }) {
             <CardContent className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <Avatar size="lg">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                  <AvatarImage
+                    src={user.image ?? undefined}
+                    alt={user.username}
+                  />
                   <AvatarFallback className="text-base">
-                    {getInitials(user.name)}
+                    {getInitials(user.username)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-0.5 overflow-hidden">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">
+                    {user.username}
+                  </span>
                   <span className="text-muted-foreground truncate text-xs">
                     {user.email}
                   </span>
