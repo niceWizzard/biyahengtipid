@@ -18,7 +18,9 @@ export const getTripById = async (id: string) => {
     const session = await requireEmailVerified();
     const userId = session.user.id;
     
-    const trip = await db.select().from(tripsTable).where(eq(tripsTable.userId, userId));
+    const trip = await db.query.trips.findFirst({
+        where: eq(tripsTable.userId, userId),
+    })
     
     return trip;
 }

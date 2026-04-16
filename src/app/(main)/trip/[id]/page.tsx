@@ -1,8 +1,17 @@
 import { getTripById } from '@/dal/trip';
-import React from 'react';
+import TripClient from './trip-client';
 
-export default async function TripPage({ params }: { params: { id: string } }) {
-  const trip = await getTripById(params.id);
+export default async function TripPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const trip = await getTripById(id);
 
-  return <div>{JSON.stringify(trip, null, 2)}</div>;
+  if (!trip) {
+    return <div>Trip not found</div>;
+  }
+
+  return <TripClient trip={trip} />;
 }
