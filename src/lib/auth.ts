@@ -2,6 +2,9 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import * as schema from '@/db/schema';
 import { db } from '@/db';
+import { sendEmail } from '@/lib/email';
+import { VerifyEmail } from '@/components/email/VerifyEmail';
+import React from 'react';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg', schema }),
@@ -11,8 +14,11 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
-      // TODO: Replace with an actual email provider later
-      console.log(`\n\n[EMAIL] 📧 Verify email for ${user.email}:\n➡️  ${url}\n\n`);
+      await sendEmail({
+        to: user.email,
+        subject: 'Verify your email address - Biyaheng Tipid',
+        node: React.createElement(VerifyEmail, { url })
+      });
     },
   },
   user: {
