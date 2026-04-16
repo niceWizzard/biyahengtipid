@@ -1,3 +1,4 @@
+import { getSessionCookie } from 'better-auth/cookies';
 import { NextRequest, NextResponse } from 'next/server';
 
 const protectedRoutes = ['/dashboard'];
@@ -11,9 +12,7 @@ export async function proxy(request: NextRequest) {
   if (!isProtected) return NextResponse.next();
 
   // Check for the Better Auth session cookie
-  const sessionCookie =
-    request.cookies.get('better-auth.session_token') ||
-    request.cookies.get('__Secure-better-auth.session_token');
+  const sessionCookie = getSessionCookie(request);
 
   if (!sessionCookie) {
     const loginUrl = new URL('/login', request.url);
