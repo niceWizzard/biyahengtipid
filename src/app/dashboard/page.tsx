@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { requireEmailVerified } from '@/dal/emailVerified';
 import DashboardClient from './dashboard-client';
+import { getTripsOfUser } from '@/dal/trip';
 
 export const metadata = {
   title: 'Dashboard | BiyahengTipid',
@@ -8,7 +9,7 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const session = await requireEmailVerified();
+  const trips = await getTripsOfUser();
 
-  return <DashboardClient user={session.user} />;
+  return <DashboardClient trips={trips} />;
 }
