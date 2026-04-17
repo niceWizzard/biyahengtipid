@@ -1,9 +1,8 @@
-import { headers } from 'next/headers';
-import { requireEmailVerified } from '@/dal/emailVerified';
 import DashboardClient from './dashboard-client';
 import { getTripsOfUser } from '@/dal/trip';
+import { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Dashboard | BiyahengTipid',
   description: 'Your BiyahengTipid dashboard — manage routes and view stats.',
 };
