@@ -1,3 +1,4 @@
+import Brand from '@/components/ui/Brand';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Drawer,
@@ -17,11 +18,7 @@ export default function Header() {
     <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-8">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-extrabold tracking-tighter">
-            <Link href="/">
-              Biyaheng<span className="text-primary">Tipid</span>
-            </Link>
-          </h1>
+          <Brand />
         </div>
 
         {/* Desktop Navigation */}
