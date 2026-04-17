@@ -1,4 +1,3 @@
-'use client';
 import { renderToStaticMarkup } from 'react-dom/server';
 import L from 'leaflet';
 import {
