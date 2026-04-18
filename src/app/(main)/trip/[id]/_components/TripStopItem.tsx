@@ -4,7 +4,7 @@ import { GripVertical, Trash2 } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 
-export interface MarkerData {
+export interface StopData {
   id: string;
   lat: number;
   lng: number;
@@ -12,11 +12,11 @@ export interface MarkerData {
 }
 
 export function TripStopItem({
-  marker,
+  stop,
   index,
   onDelete,
 }: {
-  marker: MarkerData;
+  stop: StopData;
   index: number;
   onDelete: (id: string) => void;
 }) {
@@ -28,7 +28,7 @@ export function TripStopItem({
     transition,
     isDragging,
   } = useSortable({
-    id: marker.id,
+    id: stop.id,
   });
 
   const style = {
@@ -62,14 +62,14 @@ export function TripStopItem({
 
         <div className="flex min-w-0 flex-1 flex-col">
           <p className="text-foreground mb-1 truncate text-sm leading-none font-semibold">
-            {marker.name}
+            {stop.name}
           </p>
           <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
             <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-              Lat: {marker.lat.toFixed(4)}
+              Lat: {stop.lat.toFixed(4)}
             </span>
             <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-              Lng: {marker.lng.toFixed(4)}
+              Lng: {stop.lng.toFixed(4)}
             </span>
           </div>
         </div>
@@ -77,7 +77,7 @@ export function TripStopItem({
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            onDelete(marker.id);
+            onDelete(stop.id);
           }}
           size="icon"
           variant="ghost"

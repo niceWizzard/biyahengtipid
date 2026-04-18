@@ -23,45 +23,45 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { MarkerData, TripStopItem } from './_components/TripStopItem';
+import { StopData, TripStopItem } from './_components/TripStopItem';
 import { Button } from '@/components/ui/button';
 
 enum TripActionType {
-  ADD_MARKER = 'ADD_MARKER',
-  DELETE_MARKER = 'DELETE_MARKER',
-  REORDER_MARKERS = 'REORDER_MARKERS',
-  UPDATE_MARKER_LOCATION = 'UPDATE_MARKER_LOCATION',
+  ADD_STOP = 'ADD_STOP',
+  DELETE_STOP = 'DELETE_STOP',
+  REORDER_STOPS = 'REORDER_STOPS',
+  UPDATE_STOP_LOCATION = 'UPDATE_STOP_LOCATION',
 }
 
 type TripAction =
   | {
-      type: TripActionType.ADD_MARKER;
+      type: TripActionType.ADD_STOP;
       payload: { lat: number; lng: number; id: string; name: string };
     }
   | {
-      type: TripActionType.DELETE_MARKER;
+      type: TripActionType.DELETE_STOP;
       payload: string;
     }
   | {
-      type: TripActionType.REORDER_MARKERS;
+      type: TripActionType.REORDER_STOPS;
       payload: { activeId: string; overId: string };
     }
   | {
-      type: TripActionType.UPDATE_MARKER_LOCATION;
+      type: TripActionType.UPDATE_STOP_LOCATION;
       payload: { id: string; lat: number; lng: number };
     };
 
-function tripReducer(state: MarkerData[], action: TripAction): MarkerData[] {
+function tripReducer(state: StopData[], action: TripAction): StopData[] {
   switch (action.type) {
-    case TripActionType.ADD_MARKER:
+    case TripActionType.ADD_STOP:
       return [...state, { ...action.payload }];
-    case TripActionType.DELETE_MARKER:
+    case TripActionType.DELETE_STOP:
       return state.filter((m) => m.id !== action.payload);
-    case TripActionType.UPDATE_MARKER_LOCATION: {
+    case TripActionType.UPDATE_STOP_LOCATION: {
       const { id, lat, lng } = action.payload;
       return state.map((m) => (m.id === id ? { ...m, lat, lng } : m));
     }
-    case TripActionType.REORDER_MARKERS: {
+    case TripActionType.REORDER_STOPS: {
       const { activeId, overId } = action.payload;
       const oldIndex = state.findIndex((i) => i.id === activeId);
       const newIndex = state.findIndex((i) => i.id === overId);
@@ -88,7 +88,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
       }),
     []
   );
-  const [markers, dispatch] = useReducer(tripReducer, []);
+  const [stops, dispatch] = useReducer(tripReducer, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -106,7 +106,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
 
     if (over && active.id !== over.id) {
       dispatch({
-        type: TripActionType.REORDER_MARKERS,
+        type: TripActionType.REORDER_STOPS,
         payload: {
           activeId: active.id as string,
           overId: over.id as string,
@@ -116,7 +116,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
   };
 
   const handleDelete = (id: string) => {
-    dispatch({ type: TripActionType.DELETE_MARKER, payload: id });
+    dispatch({ type: TripActionType.DELETE_STOP, payload: id });
   };
 
   return (
@@ -134,8 +134,8 @@ export default function TripClient({ trip }: { trip: Trip }) {
                 {trip.name}
               </h2>
               <p className="text-muted-foreground text-sm font-medium">
-                {markers.length} {markers.length === 1 ? 'stop' : 'stops'} •
-                Drag to reorder
+                {stops.length} {stops.length === 1 ? 'stop' : 'stops'} • Drag to
+                reorder
               </p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
 
         {/* List Section */}
         <div className="custom-scrollbar bg-accent/20 flex-1 overflow-y-scroll p-4">
-          {markers.length === 0 ? (
+          {stops.length === 0 ? (
             <div className="text-muted-foreground border-border/60 bg-background/50 flex h-full min-h-[200px] flex-col items-center justify-center space-y-4 rounded-3xl border-2 border-dashed p-8 text-center">
               <div className="bg-muted/50 rounded-full p-4">
                 <MapIcon size={40} className="text-muted-foreground/60" />
@@ -171,14 +171,14 @@ export default function TripClient({ trip }: { trip: Trip }) {
               ]}
             >
               <SortableContext
-                items={markers.map((m) => m.id)}
+                items={stops.map((m) => m.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="flex flex-col gap-3">
-                  {markers.map((marker, index) => (
+                  {stops.map((marker, index) => (
                     <TripStopItem
                       key={marker.id}
-                      marker={marker}
+                      stop={marker}
                       index={index}
                       onDelete={handleDelete}
                     />
@@ -194,7 +194,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
           <Button
             size="lg"
             className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
-            disabled={markers.length === 0}
+            disabled={stops.length === 0}
           >
             Save Trip Itinerary
           </Button>
@@ -204,10 +204,10 @@ export default function TripClient({ trip }: { trip: Trip }) {
       {/* Map Panel */}
       <div className="bg-muted/20 relative z-0 h-1/2 flex-1 lg:h-full">
         <MapComponent
-          markers={markers}
+          markers={stops}
           onMapClick={(lat, lng) => {
             dispatch({
-              type: TripActionType.ADD_MARKER,
+              type: TripActionType.ADD_STOP,
               payload: {
                 id: crypto.randomUUID(),
                 lat,
@@ -218,7 +218,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
           }}
           onStopUpdateLocation={(id, lat, lng) => {
             dispatch({
-              type: TripActionType.UPDATE_MARKER_LOCATION,
+              type: TripActionType.UPDATE_STOP_LOCATION,
               payload: { id, lat, lng },
             });
           }}
