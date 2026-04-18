@@ -10,7 +10,7 @@ import {
 } from 'react-leaflet';
 
 const getNumberedIcon = (index: number) => {
-  if (typeof window === 'undefined') return undefined as any;
+  if (typeof window === 'undefined') return undefined;
   return L.divIcon({
     className: 'bg-transparent border-none shadow-none',
     html: renderToStaticMarkup(
