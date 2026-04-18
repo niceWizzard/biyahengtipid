@@ -2,6 +2,7 @@
 
 import { Trip } from '@/db/types';
 import 'leaflet/dist/leaflet.css';
+import './style.css';
 import { useMemo, useReducer } from 'react';
 import { MapIcon, Route } from 'lucide-react';
 
@@ -99,36 +100,6 @@ export default function TripClient({ trip }: { trip: Trip }) {
 
   return (
     <div className="bg-background flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
-      <style>{`
-        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-          background-color: var(--background) !important;
-          color: var(--foreground) !important;
-        }
-        .leaflet-popup-content-wrapper {
-          border: 1px solid var(--border) / 0.5);
-          border-radius: calc(var(--radius) + 4px) !important;
-          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
-        }
-        .leaflet-popup-close-button {
-          color: var(--muted-foreground) !important;
-        }
-        .leaflet-popup-content {
-          margin: 12px !important;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--border);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: var(--muted-foreground);
-        }
-      `}</style>
       {/* Sidebar / List Panel */}
       <div className="bg-card/50 relative z-10 flex h-1/2 w-full flex-col border-r shadow-2xl backdrop-blur-3xl lg:h-full lg:w-[420px] xl:w-[480px]">
         {/* Header Section */}
