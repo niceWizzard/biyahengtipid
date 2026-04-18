@@ -3,6 +3,7 @@ import L from 'leaflet';
 import {
   MapContainer,
   Marker,
+  Polyline,
   Popup,
   TileLayer,
   useMapEvents,
@@ -87,6 +88,13 @@ export default function MapComponent({
           </Marker>
         );
       })}
+      <Polyline
+        positions={markers.map((m) => [m.lat, m.lng])}
+        color="#3b82f6"
+        weight={4}
+        opacity={0.7}
+        dashArray="10, 10"
+      />
     </MapContainer>
   );
 }
