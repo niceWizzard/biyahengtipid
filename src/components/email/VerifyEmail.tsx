@@ -1,4 +1,14 @@
-import { Html, Head, Preview, Body, Container, Section, Text, Button, Link } from '@react-email/components';
+import {
+  Html,
+  Head,
+  Preview,
+  Body,
+  Container,
+  Section,
+  Text,
+  Button,
+  Link,
+} from '@react-email/components';
 import React from 'react';
 
 interface VerifyEmailProps {
@@ -18,7 +28,9 @@ export const VerifyEmail = ({ url }: VerifyEmailProps) => {
           <Section style={content}>
             <Text style={paragraph}>Hello,</Text>
             <Text style={paragraph}>
-              Thank you for signing up for <strong>Biyaheng Tipid</strong>! To complete your registration and secure your account, please verify your email address by clicking the button below.
+              Thank you for signing up for <strong>Biyaheng Tipid</strong>! To
+              complete your registration and secure your account, please verify
+              your email address by clicking the button below.
             </Text>
             <Section style={buttonContainer}>
               <Button style={button} href={url}>
@@ -26,7 +38,8 @@ export const VerifyEmail = ({ url }: VerifyEmailProps) => {
               </Button>
             </Section>
             <Text style={paragraph}>
-              If the button doesn't work, you can copy and paste the following link into your browser:
+              If the button doesn&apos;t work, you can copy and paste the
+              following link into your browser:
             </Text>
             <Text style={paragraph}>
               <Link style={link} href={url}>
@@ -34,12 +47,14 @@ export const VerifyEmail = ({ url }: VerifyEmailProps) => {
               </Link>
             </Text>
             <Text style={paragraph}>
-              If you didn't create an account with Biyaheng Tipid, you can safely ignore this email.
+              If you didn&apos;t create an account with Biyaheng Tipid, you can
+              safely ignore this email.
             </Text>
           </Section>
           <Section style={footer}>
             <Text style={footerText}>
-              &copy; {new Date().getFullYear()} Biyaheng Tipid. All rights reserved.
+              &copy; {new Date().getFullYear()} Biyaheng Tipid. All rights
+              reserved.
             </Text>
           </Section>
         </Container>
@@ -60,7 +75,8 @@ const container = {
   maxWidth: '600px',
   borderRadius: '12px',
   overflow: 'hidden',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  boxShadow:
+    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 };
 
 const header = {

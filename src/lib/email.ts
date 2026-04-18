@@ -1,8 +1,6 @@
 import 'server-only';
 import { transporter } from "@/lib/mailer";
 import { render } from '@react-email/render';
-import { VerifyEmail } from '@/components/email/VerifyEmail';
-import React from 'react';
 
 export async function sendEmail({
   node,

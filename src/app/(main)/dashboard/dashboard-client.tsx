@@ -2,11 +2,8 @@
 
 import { Trip } from '@/db/types';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export default function DashboardClient({ trips }: { trips: Trip[] }) {
-  const router = useRouter();
-
   return (
     <div className="min-h-screen">
       <section className="container mx-auto px-4 py-8">

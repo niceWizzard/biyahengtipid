@@ -1,8 +1,5 @@
 import { Metadata } from 'next';
 import LoginClient from './login-client';
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Login - BiyahengTipid',
