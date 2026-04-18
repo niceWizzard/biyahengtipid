@@ -121,7 +121,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
         </div>
 
         {/* List Section */}
-        <div className="custom-scrollbar bg-accent/20 flex-1 overflow-y-auto p-5">
+        <div className="custom-scrollbar bg-accent/20 flex-1 overflow-y-scroll p-4">
           {markers.length === 0 ? (
             <div className="text-muted-foreground border-border/60 bg-background/50 flex h-full min-h-[200px] flex-col items-center justify-center space-y-4 rounded-3xl border-2 border-dashed p-8 text-center">
               <div className="bg-muted/50 rounded-full p-4">
@@ -138,29 +138,33 @@ export default function TripClient({ trip }: { trip: Trip }) {
               </div>
             </div>
           ) : (
-            <div className="h-full overflow-x-clip pb-2">
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[
+                ({ transform }) => ({
+                  ...transform,
+                  x: 0,
+                }),
+              ]}
+            >
+              <SortableContext
+                items={markers.map((m) => m.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <SortableContext
-                  items={markers.map((m) => m.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="flex flex-col gap-3">
-                    {markers.map((marker, index) => (
-                      <TripStopItem
-                        key={marker.id}
-                        marker={marker}
-                        index={index}
-                        onDelete={handleDelete}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+                <div className="flex flex-col gap-3">
+                  {markers.map((marker, index) => (
+                    <TripStopItem
+                      key={marker.id}
+                      marker={marker}
+                      index={index}
+                      onDelete={handleDelete}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
 

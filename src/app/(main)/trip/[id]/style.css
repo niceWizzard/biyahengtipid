@@ -16,6 +16,9 @@
 .leaflet-popup-content {
   margin: 12px !important;
 }
+.custom-scrollbar {
+  scrollbar-gutter: stable;
+}
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
