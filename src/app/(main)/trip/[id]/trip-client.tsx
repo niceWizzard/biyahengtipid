@@ -144,7 +144,7 @@ function SortableMarkerItem({
 export default function TripClient({ trip }: { trip: Trip }) {
   const MapComponent = useMemo(
     () =>
-      dynamic(() => import('./MapComponent'), {
+      dynamic(() => import('./_components/MapComponent'), {
         ssr: false,
         loading: () => (
           <div className="bg-background/50 flex h-full w-full items-center justify-center">
