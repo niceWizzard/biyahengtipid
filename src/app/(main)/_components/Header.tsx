@@ -17,7 +17,7 @@ import { SquareArrowRightExit, User } from 'lucide-react';
 export default function Header() {
   return (
     <header className="border-border h-16 w-full border-b">
-      <div className="container mx-auto flex items-center justify-between px-4 py-4">
+      <div className="flex items-center justify-between px-4 py-4">
         <Brand href="/dashboard" />
         <nav>
           <ul className="flex flex-row items-center gap-4">
