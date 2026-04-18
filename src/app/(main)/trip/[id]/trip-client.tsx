@@ -211,7 +211,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
               </div>
             </div>
           ) : (
-            <div className="pb-2">
+            <div className="h-full overflow-clip pb-2">
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
