@@ -2,7 +2,7 @@
 
 import { Trip } from '@/db/types';
 import 'leaflet/dist/leaflet.css';
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer } from 'react';
 import { GripVertical, Trash2, MapIcon, Route } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -31,6 +31,31 @@ interface MarkerData {
   id: string;
   lat: number;
   lng: number;
+}
+
+type TripAction =
+  | { type: 'ADD_MARKER'; payload: { lat: number; lng: number; id: string } }
+  | { type: 'DELETE_MARKER'; payload: string }
+  | { type: 'REORDER_MARKERS'; payload: { activeId: string; overId: string } };
+
+function tripReducer(state: MarkerData[], action: TripAction): MarkerData[] {
+  switch (action.type) {
+    case 'ADD_MARKER':
+      return [...state, { ...action.payload }];
+    case 'DELETE_MARKER':
+      return state.filter((m) => m.id !== action.payload);
+    case 'REORDER_MARKERS': {
+      const { activeId, overId } = action.payload;
+      const oldIndex = state.findIndex((i) => i.id === activeId);
+      const newIndex = state.findIndex((i) => i.id === overId);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        return arrayMove(state, oldIndex, newIndex);
+      }
+      return state;
+    }
+    default:
+      return state;
+  }
 }
 
 function SortableMarkerItem({
@@ -125,7 +150,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
       }),
     []
   );
-  const [markers, setMarkers] = useState<MarkerData[]>([]);
+  const [markers, dispatch] = useReducer(tripReducer, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -142,16 +167,18 @@ export default function TripClient({ trip }: { trip: Trip }) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setMarkers((items) => {
-        const oldIndex = items.findIndex((i) => i.id === active.id);
-        const newIndex = items.findIndex((i) => i.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+      dispatch({
+        type: 'REORDER_MARKERS',
+        payload: {
+          activeId: active.id as string,
+          overId: over.id as string,
+        },
       });
     }
   };
 
   const handleDelete = (id: string) => {
-    setMarkers((prev) => prev.filter((m) => m.id !== id));
+    dispatch({ type: 'DELETE_MARKER', payload: id });
   };
 
   return (
@@ -267,10 +294,10 @@ export default function TripClient({ trip }: { trip: Trip }) {
         <MapComponent
           markers={markers}
           onMapClick={(lat, lng) => {
-            setMarkers((prev) => [
-              ...prev,
-              { id: crypto.randomUUID(), lat, lng },
-            ]);
+            dispatch({
+              type: 'ADD_MARKER',
+              payload: { id: crypto.randomUUID(), lat, lng },
+            });
           }}
         />
       </div>
