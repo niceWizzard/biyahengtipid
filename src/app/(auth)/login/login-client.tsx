@@ -68,7 +68,7 @@ export default function LoginClient() {
       });
       return;
     }
-    
+
     router.push('/dashboard');
   };
 
@@ -168,7 +168,7 @@ export default function LoginClient() {
                   )}
                 />
                 <Link
-                  href="/forgot-password"
+                  href={{ pathname: '/forgot-password' }}
                   className="self-end text-xs font-medium underline-offset-4 transition-colors hover:underline"
                 >
                   Forgot password?
