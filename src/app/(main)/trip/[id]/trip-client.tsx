@@ -31,10 +31,14 @@ interface MarkerData {
   id: string;
   lat: number;
   lng: number;
+  name: string;
 }
 
 type TripAction =
-  | { type: 'ADD_MARKER'; payload: { lat: number; lng: number; id: string } }
+  | {
+      type: 'ADD_MARKER';
+      payload: { lat: number; lng: number; id: string; name: string };
+    }
   | { type: 'DELETE_MARKER'; payload: string }
   | { type: 'REORDER_MARKERS'; payload: { activeId: string; overId: string } };
 
@@ -109,7 +113,7 @@ function SortableMarkerItem({
 
         <div className="flex min-w-0 flex-1 flex-col">
           <p className="text-foreground mb-1 truncate text-sm leading-none font-semibold">
-            Stop {index + 1}
+            {marker.name}
           </p>
           <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
             <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
@@ -296,7 +300,12 @@ export default function TripClient({ trip }: { trip: Trip }) {
           onMapClick={(lat, lng) => {
             dispatch({
               type: 'ADD_MARKER',
-              payload: { id: crypto.randomUUID(), lat, lng },
+              payload: {
+                id: crypto.randomUUID(),
+                lat,
+                lng,
+                name: new Date().toISOString(),
+              },
             });
           }}
         />
