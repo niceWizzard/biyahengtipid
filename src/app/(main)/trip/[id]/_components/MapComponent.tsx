@@ -42,9 +42,11 @@ const getNumberedIcon = (index: number) => {
 export default function MapComponent({
   markers,
   onMapClick,
+  onStopUpdateLocation,
 }: {
   markers: { id: string; lat: number; lng: number }[];
   onMapClick: (lat: number, lng: number) => void;
+  onStopUpdateLocation: (id: string, lat: number, lng: number) => void;
 }) {
   return (
     <MapContainer
@@ -74,6 +76,13 @@ export default function MapComponent({
             key={marker.id}
             position={[marker.lat, marker.lng]}
             icon={icon}
+            draggable
+            eventHandlers={{
+              dragend: (e) => {
+                const { lat, lng } = e.target.getLatLng();
+                onStopUpdateLocation(marker.id, lat, lng);
+              },
+            }}
           >
             <Popup>
               <div className="mb-1 text-center text-base font-bold">

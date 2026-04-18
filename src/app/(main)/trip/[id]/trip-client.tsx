@@ -32,7 +32,11 @@ type TripAction =
       payload: { lat: number; lng: number; id: string; name: string };
     }
   | { type: 'DELETE_MARKER'; payload: string }
-  | { type: 'REORDER_MARKERS'; payload: { activeId: string; overId: string } };
+  | { type: 'REORDER_MARKERS'; payload: { activeId: string; overId: string } }
+  | {
+      type: 'UPDATE_MARKER_LOCATION';
+      payload: { id: string; lat: number; lng: number };
+    };
 
 function tripReducer(state: MarkerData[], action: TripAction): MarkerData[] {
   switch (action.type) {
@@ -40,6 +44,10 @@ function tripReducer(state: MarkerData[], action: TripAction): MarkerData[] {
       return [...state, { ...action.payload }];
     case 'DELETE_MARKER':
       return state.filter((m) => m.id !== action.payload);
+    case 'UPDATE_MARKER_LOCATION': {
+      const { id, lat, lng } = action.payload;
+      return state.map((m) => (m.id === id ? { ...m, lat, lng } : m));
+    }
     case 'REORDER_MARKERS': {
       const { activeId, overId } = action.payload;
       const oldIndex = state.findIndex((i) => i.id === activeId);
@@ -193,6 +201,12 @@ export default function TripClient({ trip }: { trip: Trip }) {
                 lng,
                 name: new Date().toISOString(),
               },
+            });
+          }}
+          onStopUpdateLocation={(id, lat, lng) => {
+            dispatch({
+              type: 'UPDATE_MARKER_LOCATION',
+              payload: { id, lat, lng },
             });
           }}
         />
