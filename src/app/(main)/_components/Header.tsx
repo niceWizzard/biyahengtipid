@@ -1,7 +1,6 @@
 'use client';
 
 import Brand from '@/components/ui/Brand';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,8 +12,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SquareArrowRightExit, User } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
+  const router = useRouter();
   return (
     <header className="border-border h-16 w-full border-b">
       <div className="flex items-center justify-between px-4 py-4">
@@ -32,12 +34,28 @@ export default function Header() {
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Billing
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem variant="destructive">
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      variant="destructive"
+                      onClick={() => {
+                        authClient.signOut({
+                          fetchOptions: {
+                            onSuccess: () => {
+                              router.push('/login');
+                            },
+                          },
+                        });
+                      }}
+                    >
                       <SquareArrowRightExit />
                       Logout
                     </DropdownMenuItem>
