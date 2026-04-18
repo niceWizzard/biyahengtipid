@@ -26,29 +26,42 @@ import {
 import { MarkerData, TripStopItem } from './_components/TripStopItem';
 import { Button } from '@/components/ui/button';
 
+enum TripActionType {
+  ADD_MARKER = 'ADD_MARKER',
+  DELETE_MARKER = 'DELETE_MARKER',
+  REORDER_MARKERS = 'REORDER_MARKERS',
+  UPDATE_MARKER_LOCATION = 'UPDATE_MARKER_LOCATION',
+}
+
 type TripAction =
   | {
-      type: 'ADD_MARKER';
+      type: TripActionType.ADD_MARKER;
       payload: { lat: number; lng: number; id: string; name: string };
     }
-  | { type: 'DELETE_MARKER'; payload: string }
-  | { type: 'REORDER_MARKERS'; payload: { activeId: string; overId: string } }
   | {
-      type: 'UPDATE_MARKER_LOCATION';
+      type: TripActionType.DELETE_MARKER;
+      payload: string;
+    }
+  | {
+      type: TripActionType.REORDER_MARKERS;
+      payload: { activeId: string; overId: string };
+    }
+  | {
+      type: TripActionType.UPDATE_MARKER_LOCATION;
       payload: { id: string; lat: number; lng: number };
     };
 
 function tripReducer(state: MarkerData[], action: TripAction): MarkerData[] {
   switch (action.type) {
-    case 'ADD_MARKER':
+    case TripActionType.ADD_MARKER:
       return [...state, { ...action.payload }];
-    case 'DELETE_MARKER':
+    case TripActionType.DELETE_MARKER:
       return state.filter((m) => m.id !== action.payload);
-    case 'UPDATE_MARKER_LOCATION': {
+    case TripActionType.UPDATE_MARKER_LOCATION: {
       const { id, lat, lng } = action.payload;
       return state.map((m) => (m.id === id ? { ...m, lat, lng } : m));
     }
-    case 'REORDER_MARKERS': {
+    case TripActionType.REORDER_MARKERS: {
       const { activeId, overId } = action.payload;
       const oldIndex = state.findIndex((i) => i.id === activeId);
       const newIndex = state.findIndex((i) => i.id === overId);
@@ -93,7 +106,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
 
     if (over && active.id !== over.id) {
       dispatch({
-        type: 'REORDER_MARKERS',
+        type: TripActionType.REORDER_MARKERS,
         payload: {
           activeId: active.id as string,
           overId: over.id as string,
@@ -103,7 +116,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
   };
 
   const handleDelete = (id: string) => {
-    dispatch({ type: 'DELETE_MARKER', payload: id });
+    dispatch({ type: TripActionType.DELETE_MARKER, payload: id });
   };
 
   return (
@@ -194,7 +207,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
           markers={markers}
           onMapClick={(lat, lng) => {
             dispatch({
-              type: 'ADD_MARKER',
+              type: TripActionType.ADD_MARKER,
               payload: {
                 id: crypto.randomUUID(),
                 lat,
@@ -205,7 +218,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
           }}
           onStopUpdateLocation={(id, lat, lng) => {
             dispatch({
-              type: 'UPDATE_MARKER_LOCATION',
+              type: TripActionType.UPDATE_MARKER_LOCATION,
               payload: { id, lat, lng },
             });
           }}
