@@ -3,7 +3,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { MapIcon, Route } from 'lucide-react';
+import { Edit, MapIcon, Route, Settings } from 'lucide-react';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -15,7 +15,26 @@ import {
 } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Trip } from '@/db/types';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { StopData, TripStopItem } from './TripStopItem';
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field';
+import { Controller, useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 
 interface Props {
   trip: Trip;
@@ -23,6 +42,12 @@ interface Props {
   onDragEnd: (params: { activeId: string; overId: string }) => void;
   onDelete: (id: string) => void;
 }
+
+const tripSchema = z.object({
+  name: z.string().min(1, 'Trip name is required'),
+});
+
+type TripSchema = z.infer<typeof tripSchema>;
 
 export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
   const sensors = useSensors(
@@ -36,6 +61,15 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
     })
   );
 
+  const form = useForm<TripSchema>({
+    resolver: zodResolver(tripSchema),
+    defaultValues: {
+      name: trip.name,
+    },
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -44,15 +78,21 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
     }
   };
 
+  const onSubmit = (data: TripSchema) => {
+    setIsEditing(false);
+    form.reset();
+    console.log(data);
+  };
+
   return (
     <div className="bg-card/50 relative z-10 flex h-1/2 w-full flex-col border-r shadow-2xl backdrop-blur-3xl lg:h-full lg:w-[420px] xl:w-[480px]">
       {/* Header Section */}
       <div className="bg-background/80 sticky top-0 z-20 flex flex-col border-b p-6 backdrop-blur-md">
-        <div className="mb-1 flex items-center gap-3">
+        <div className="mb-1 flex items-center justify-center gap-3">
           <div className="bg-primary/10 rounded-2xl p-2.5">
-            <Route className="text-primary h-6 w-6" />
+            <Route className="text-primary size-6" />
           </div>
-          <div>
+          <div className="flex-1">
             <h2 className="from-foreground to-foreground/70 truncate bg-linear-to-r bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
               {trip.name}
             </h2>
@@ -61,6 +101,59 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
               reorder
             </p>
           </div>
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogTrigger
+              render={
+                <Button variant="ghost" aria-label="Settings">
+                  <Settings className="size-5" />
+                </Button>
+              }
+            />
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="tracking-tight">Edit Trip</DialogTitle>
+                <DialogDescription>
+                  Update your trip name and description.
+                </DialogDescription>
+              </DialogHeader>
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <FieldGroup>
+                  <Controller
+                    name="name"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel className="text-foreground/80" htmlFor="trip-name">
+                          Trip Name
+                        </FieldLabel>
+                        <Input
+                          id="trip-name"
+                          className="bg-background/50 border-input focus:ring-primary/20 focus:border-primary h-12 transition-all"
+                          type="text"
+                          placeholder="Enter your trip name"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldDescription className="text-destructive mt-1 text-xs font-medium">
+                            {fieldState.error?.message}
+                          </FieldDescription>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+                <Button
+                  type="submit"
+                  className="shadow-primary/20 w-full rounded-lg font-bold shadow-lg"
+                >
+                  Save Changes
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
