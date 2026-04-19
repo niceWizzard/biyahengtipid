@@ -1,2 +1,1 @@
-
-export const requireEmailVerified = vi.fn()
+export const requireEmailVerified = vi.fn();

@@ -1,15 +1,15 @@
 import 'server-only';
-import { transporter } from "@/lib/mailer";
+import { transporter } from '@/lib/mailer';
 import { render } from '@react-email/render';
 
 export async function sendEmail({
   node,
   to,
-  subject
+  subject,
 }: {
-  node: React.ReactNode
-  to: string
-  subject: string
+  node: React.ReactNode;
+  to: string;
+  subject: string;
 }) {
   try {
     const html = await render(node);
@@ -23,7 +23,7 @@ export async function sendEmail({
 
     return { success: true };
   } catch (error) {
-    console.error("Auth Error:", error);
-    return { success: false, error: "Failed to send email." };
+    console.error('Auth Error:', error);
+    return { success: false, error: 'Failed to send email.' };
   }
 }

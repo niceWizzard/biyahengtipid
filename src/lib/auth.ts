@@ -17,7 +17,7 @@ export const auth = betterAuth({
       await sendEmail({
         to: user.email,
         subject: 'Verify your email address - Biyaheng Tipid',
-        node: React.createElement(VerifyEmail, { url })
+        node: React.createElement(VerifyEmail, { url }),
       });
     },
   },
@@ -38,6 +38,6 @@ export const auth = betterAuth({
     modelName: 'accounts',
   },
   verification: {
-    modelName: "verifications"
-  }
+    modelName: 'verifications',
+  },
 });

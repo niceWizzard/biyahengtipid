@@ -43,7 +43,9 @@ vi.mock('./TripStopItem', () => ({
 
 // Mock server actions
 vi.mock('@/actions/trip', () => ({
-  updateTripName: vi.fn().mockResolvedValue({ success: true, message: 'Updated' }),
+  updateTripName: vi
+    .fn()
+    .mockResolvedValue({ success: true, message: 'Updated' }),
 }));
 
 describe('TripPanel', () => {

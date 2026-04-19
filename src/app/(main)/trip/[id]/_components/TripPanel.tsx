@@ -83,7 +83,7 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
   const onSubmit = async (data: TripSchema) => {
     try {
       const result = await updateTripName(trip.id.toString(), data.name);
-      
+
       if (result.success) {
         toast.success(result.message);
         setIsEditing(false);
@@ -138,7 +138,10 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel className="text-foreground/80" htmlFor="trip-name">
+                        <FieldLabel
+                          className="text-foreground/80"
+                          htmlFor="trip-name"
+                        >
                           Trip Name
                         </FieldLabel>
                         <Input

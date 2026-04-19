@@ -8,7 +8,9 @@ const VERIFY_EMAIL_ROUTE = '/verify-email';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+  const isProtected = PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route)
+  );
   const isNonAuth = NON_AUTH_ROUTES.some((route) => pathname.startsWith(route));
   const isVerifyEmail = pathname.startsWith(VERIFY_EMAIL_ROUTE);
 
@@ -35,7 +37,11 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-
 export const config = {
-  matcher: ['/dashboard/:path*', '/login/:path*', '/register/:path*', '/verify-email/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/login/:path*',
+    '/register/:path*',
+    '/verify-email/:path*',
+  ],
 };
