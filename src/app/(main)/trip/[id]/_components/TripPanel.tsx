@@ -35,6 +35,8 @@ import { Input } from '@/components/ui/input';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { updateTripName } from '@/actions/trip';
+import { toast } from 'sonner';
 
 interface Props {
   trip: Trip;
@@ -78,10 +80,20 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
     }
   };
 
-  const onSubmit = (data: TripSchema) => {
-    setIsEditing(false);
-    form.reset();
-    console.log(data);
+  const onSubmit = async (data: TripSchema) => {
+    try {
+      const result = await updateTripName(trip.id.toString(), data.name);
+      
+      if (result.success) {
+        toast.success(result.message);
+        setIsEditing(false);
+        form.reset(data);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred.');
+    }
   };
 
   return (
@@ -148,8 +160,9 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
                 <Button
                   type="submit"
                   className="shadow-primary/20 w-full rounded-lg font-bold shadow-lg"
+                  disabled={form.formState.isSubmitting}
                 >
-                  Save Changes
+                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
                 </Button>
               </form>
             </DialogContent>

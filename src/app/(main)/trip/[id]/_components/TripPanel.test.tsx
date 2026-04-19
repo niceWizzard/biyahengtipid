@@ -41,6 +41,11 @@ vi.mock('./TripStopItem', () => ({
   ),
 }));
 
+// Mock server actions
+vi.mock('@/actions/trip', () => ({
+  updateTripName: vi.fn().mockResolvedValue({ success: true, message: 'Updated' }),
+}));
+
 describe('TripPanel', () => {
   const mockTrip = {
     id: 1,

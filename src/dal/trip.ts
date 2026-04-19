@@ -15,13 +15,27 @@ export const getTripsOfUser = async () => {
 }
 
 export const getTripById = async (id: string) => {
-    const session = await requireEmailVerified();
-    const userId = session.user.id;
+    const parsedId = Number(id)
+
+    if (isNaN(parsedId)) {
+        throw new Error('Invalid trip ID');
+    }
     
     const trip = await db.query.trips.findFirst({
-        where: eq(tripsTable.userId, userId),
+        where: eq(tripsTable.id, parsedId),
     })
     
     return trip;
 }
 
+export const updateTripName = async (id: string, name: string) => {
+    const parsedId = Number(id)
+
+    if (isNaN(parsedId)) {
+        throw new Error('Invalid trip ID');
+    }
+    
+    const trip = await db.update(tripsTable).set({ name }).where(eq(tripsTable.id, parsedId));
+    
+    return trip;
+}
