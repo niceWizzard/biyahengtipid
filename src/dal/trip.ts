@@ -53,3 +53,13 @@ export const updateTripName = async (id: string, name: string) => {
 
   return trip;
 };
+
+export const deleteTrip = async(id : string) => {
+    const parsedId = Number(id);
+
+    if (isNaN(parsedId)) {
+        throw new Error('Invalid trip ID');
+    }
+
+    await db.delete(tripsTable).where(eq(tripsTable.id, parsedId));
+}

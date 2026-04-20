@@ -11,9 +11,29 @@ import { Settings } from 'lucide-react';
 import { useState } from 'react';
 import EditTripDialog from './EditTripDialog';
 import { Trip } from '@/db/types';
+import { deleteTripAction } from '@/actions/trip';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function SettingsDropdown({ trip }: { trip: Trip }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await deleteTripAction(trip.id.toString());
+      if (res.success) {
+        router.push('/dashboard');
+      }
+    } catch (err) {
+      toast.error('Something went wrong while deleting trip.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
   return (
     <>
       <DropdownMenu>
@@ -33,8 +53,15 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
             >
               Edit Trip
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer" variant="destructive">
-              Delete Trip
+            <DropdownMenuItem
+              className="cursor-pointer"
+              variant="destructive"
+              closeOnClick={false}
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting && <Spinner />}
+              {isDeleting ? 'Deleting...' : 'Delete Trip'}
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

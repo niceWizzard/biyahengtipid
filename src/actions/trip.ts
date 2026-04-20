@@ -1,7 +1,7 @@
 'use server';
 
 import { requireEmailVerified } from '@/dal/emailVerified';
-import { createTrip, getTripById, updateTripName as updateTripNameDal } from '@/dal/trip';
+import { createTrip, deleteTrip, getTripById, updateTripName as updateTripNameDal } from '@/dal/trip';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -63,3 +63,24 @@ export const createTripAction = async () => {
   }
 }
 
+export const deleteTripAction = async (id: string) => {
+  try {
+    const session = await requireEmailVerified();
+    const trip = await getTripById(id);
+
+    if (!trip) {
+      return { success: false, message: 'Trip not found' };
+    }
+
+    if (trip.userId !== session.user.id) {
+      return { success: false, message: 'Unauthorized' };
+    }
+
+    await deleteTrip(id);
+    revalidatePath('/trip');
+    return { success: true, message: 'Trip deleted successfully.' };
+  } catch (err) {
+    console.error(err);
+    return { success: false, message: 'Something went wrong.' };
+  }
+}

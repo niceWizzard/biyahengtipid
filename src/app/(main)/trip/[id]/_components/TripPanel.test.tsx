@@ -40,6 +40,7 @@ vi.mock('./TripStopItem', () => ({
 }));
 
 vi.mock('@/actions/trip');
+vi.mock('next/navigation');
 
 describe('TripPanel', () => {
   const mockTrip = {
