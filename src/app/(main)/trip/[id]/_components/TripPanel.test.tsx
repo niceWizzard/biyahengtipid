@@ -148,7 +148,7 @@ describe('TripPanel', () => {
     expect(screen.getByLabelText(/trip name/i)).toBeDefined();
   });
 
-  test('validates trip name in edit dialog', async () => {
+  test('should not accept empty trip name', async () => {
     render(
       <TripPanel
         trip={mockTrip}
@@ -166,7 +166,33 @@ describe('TripPanel', () => {
     const saveButton = screen.getByRole('button', { name: /save changes/i });
     fireEvent.click(saveButton);
 
-    expect(await screen.findByText(/trip name is required/i)).toBeDefined();
+    expect(await screen.findByText(/trip name is too short/i)).toBeDefined();
+  });
+
+  test('should not accept long strings', async () => {
+    render(
+      <TripPanel
+        trip={mockTrip}
+        stops={mockStops}
+        onDragEnd={mockOnDragEnd}
+        onDelete={mockOnDelete}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+
+    const input = screen.getByLabelText(/trip name/i);
+    fireEvent.change(input, {
+      target: {
+        value:
+          'SUPER DUPER LONG TEXT WHICH SHOULD BE INVALID BECAUSE IT IS TOO LONG!',
+      },
+    });
+
+    const saveButton = screen.getByRole('button', { name: /save changes/i });
+    fireEvent.click(saveButton);
+
+    expect(await screen.findByText(/trip name is too long/i)).toBeDefined();
   });
 
   test('disables "Save Trip Itinerary" button when there are no stops', () => {

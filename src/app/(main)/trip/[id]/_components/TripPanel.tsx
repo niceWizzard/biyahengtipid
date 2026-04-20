@@ -46,7 +46,10 @@ interface Props {
 }
 
 const tripSchema = z.object({
-  name: z.string().min(1, 'Trip name is required'),
+  name: z
+    .string()
+    .min(3, 'Trip name is too short')
+    .max(32, 'Trip name is too long'),
 });
 
 type TripSchema = z.infer<typeof tripSchema>;
