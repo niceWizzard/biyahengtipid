@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TripPanel from './TripPanel';
 
 vi.mock('@dnd-kit/core', () => ({
@@ -137,8 +137,8 @@ describe('TripPanel', () => {
 
     fireEvent.click(settingsButton);
 
-    expect(await screen.findByText('Edit Trip')).toBeDefined();
-    expect(screen.getByLabelText(/trip name/i)).toBeDefined();
+    expect(await screen.findByText('Trip Actions')).toBeDefined();
+    expect(screen.getByText(/Edit Trip/i)).toBeDefined();
   });
 
   test('disables "Save Trip Itinerary" button when there are no stops', () => {

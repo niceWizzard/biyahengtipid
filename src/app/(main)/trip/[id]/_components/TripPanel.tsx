@@ -20,6 +20,7 @@ import { StopData, TripStopItem } from './TripStopItem';
 
 import { updateTripName } from '@/actions/trip';
 import EditTripDialog, { TripSchema } from './EditTripDialog';
+import SettingsDropdown from './SettingsDropDown';
 
 interface Props {
   trip: Trip;
@@ -65,7 +66,7 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
               reorder
             </p>
           </div>
-          <EditTripDialog trip={trip} />
+          <SettingsDropdown trip={trip} />
         </div>
       </div>
 

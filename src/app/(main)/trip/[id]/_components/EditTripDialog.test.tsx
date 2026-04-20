@@ -16,22 +16,16 @@ describe('EditTripDialog', () => {
     updatedAt: new Date(),
   };
 
+  const component = (
+    <EditTripDialog trip={mockTrip} isEditing={true} onClose={() => {}} />
+  );
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test('renders the settings trigger button', () => {
-    render(<EditTripDialog trip={mockTrip} />);
-
-    const settingsButton = screen.getByRole('button', { name: /settings/i });
-    expect(settingsButton).toBeDefined();
-  });
-
   test('opens the dialog and displays the initial trip name', async () => {
-    render(<EditTripDialog trip={mockTrip} />);
-
-    const settingsButton = screen.getByRole('button', { name: /settings/i });
-    fireEvent.click(settingsButton);
+    render(component);
 
     expect(await screen.findByText('Edit Trip')).toBeDefined();
     const input = screen.getByLabelText(/trip name/i) as HTMLInputElement;
@@ -39,9 +33,7 @@ describe('EditTripDialog', () => {
   });
 
   test('shows error message for short trip name', async () => {
-    render(<EditTripDialog trip={mockTrip} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    render(component);
 
     const input = screen.getByLabelText(/trip name/i);
     fireEvent.change(input, { target: { value: 'ab' } });
@@ -53,9 +45,7 @@ describe('EditTripDialog', () => {
   });
 
   test('shows error message for long trip name', async () => {
-    render(<EditTripDialog trip={mockTrip} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    render(component);
 
     const input = screen.getByLabelText(/trip name/i);
     fireEvent.change(input, {
@@ -75,9 +65,7 @@ describe('EditTripDialog', () => {
       message: 'Trip updated successfully',
     });
 
-    render(<EditTripDialog trip={mockTrip} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    render(component);
 
     const input = screen.getByLabelText(/trip name/i);
     fireEvent.change(input, { target: { value: 'Updated Trip Name' } });
@@ -90,11 +78,6 @@ describe('EditTripDialog', () => {
     });
 
     expect(toast.success).toHaveBeenCalledWith('Trip updated successfully');
-
-    // Dialog should be closed (Edit Trip title should be gone)
-    await waitFor(() => {
-      expect(screen.queryByText('Edit Trip')).toBeNull();
-    });
   });
 
   test('handles failed form submission', async () => {
@@ -104,9 +87,7 @@ describe('EditTripDialog', () => {
       message: 'Something went wrong',
     });
 
-    render(<EditTripDialog trip={mockTrip} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    render(component);
 
     const input = screen.getByLabelText(/trip name/i);
     fireEvent.change(input, { target: { value: 'Updated Trip Name' } });

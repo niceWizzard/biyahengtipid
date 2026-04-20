@@ -35,22 +35,23 @@ export type TripSchema = z.infer<typeof tripSchema>;
 
 interface Props {
   trip: Trip;
+  isEditing: boolean;
+  onClose: () => void;
 }
 
-export default function EditTripDialog({ trip }: Props) {
+export default function EditTripDialog({ trip, isEditing, onClose }: Props) {
   const form = useForm<TripSchema>({
     resolver: zodResolver(tripSchema),
     defaultValues: {
       name: trip.name,
     },
   });
-  const [isEditing, setIsEditing] = useState(false);
 
   const handleFormSubmit = async (data: TripSchema) => {
     const result = await updateTripName(trip.id.toString(), data.name);
     if (result.success) {
       toast.success(result.message);
-      setIsEditing(false);
+      onClose();
       form.reset(data);
     } else {
       toast.error(result.message);
@@ -58,14 +59,7 @@ export default function EditTripDialog({ trip }: Props) {
   };
 
   return (
-    <Dialog open={isEditing} onOpenChange={setIsEditing}>
-      <DialogTrigger
-        render={
-          <Button variant="ghost" aria-label="Settings">
-            <Settings className="size-5" />
-          </Button>
-        }
-      />
+    <Dialog open={isEditing} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="tracking-tight">Edit Trip</DialogTitle>
