@@ -31,10 +31,13 @@ export const getTripById = async (id: string) => {
 };
 
 export const createTrip = async (userId: string) => {
-  const trip = await db.insert(tripsTable).values({
-    userId,
-    name: 'New Trip ' + Date.now().toString(),
-  }).returning();
+  const trip = await db
+    .insert(tripsTable)
+    .values({
+      userId,
+      name: 'New Trip ' + Date.now().toString(),
+    })
+    .returning();
 
   return trip[0];
 };
@@ -54,12 +57,12 @@ export const updateTripName = async (id: string, name: string) => {
   return trip;
 };
 
-export const deleteTrip = async(id : string) => {
-    const parsedId = Number(id);
+export const deleteTrip = async (id: string) => {
+  const parsedId = Number(id);
 
-    if (isNaN(parsedId)) {
-        throw new Error('Invalid trip ID');
-    }
+  if (isNaN(parsedId)) {
+    throw new Error('Invalid trip ID');
+  }
 
-    await db.delete(tripsTable).where(eq(tripsTable.id, parsedId));
-}
+  await db.delete(tripsTable).where(eq(tripsTable.id, parsedId));
+};
