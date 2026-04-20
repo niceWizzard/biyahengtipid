@@ -1,8 +1,7 @@
 /// <reference types="vitest/globals" />
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import TripPanel from './TripPanel';
 
-// Mock dnd-kit
 vi.mock('@dnd-kit/core', () => ({
   DndContext: ({ children }: any) => <div>{children}</div>,
   useSensor: vi.fn(),
@@ -26,7 +25,6 @@ vi.mock('@dnd-kit/sortable', () => ({
   sortableKeyboardCoordinates: vi.fn(),
 }));
 
-// Mock TripStopItem
 vi.mock('./TripStopItem', () => ({
   TripStopItem: ({ stop, index, onDelete }: any) => (
     <div data-testid={`stop-item-${stop.id}`}>
@@ -41,12 +39,7 @@ vi.mock('./TripStopItem', () => ({
   ),
 }));
 
-// Mock server actions
-vi.mock('@/actions/trip', () => ({
-  updateTripName: vi
-    .fn()
-    .mockResolvedValue({ success: true, message: 'Updated' }),
-}));
+vi.mock('@/actions/trip');
 
 describe('TripPanel', () => {
   const mockTrip = {
@@ -146,53 +139,6 @@ describe('TripPanel', () => {
 
     expect(await screen.findByText('Edit Trip')).toBeDefined();
     expect(screen.getByLabelText(/trip name/i)).toBeDefined();
-  });
-
-  test('should not accept empty trip name', async () => {
-    render(
-      <TripPanel
-        trip={mockTrip}
-        stops={mockStops}
-        onDragEnd={mockOnDragEnd}
-        onDelete={mockOnDelete}
-      />
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
-
-    const input = screen.getByLabelText(/trip name/i);
-    fireEvent.change(input, { target: { value: '' } });
-
-    const saveButton = screen.getByRole('button', { name: /save changes/i });
-    fireEvent.click(saveButton);
-
-    expect(await screen.findByText(/trip name is too short/i)).toBeDefined();
-  });
-
-  test('should not accept long strings', async () => {
-    render(
-      <TripPanel
-        trip={mockTrip}
-        stops={mockStops}
-        onDragEnd={mockOnDragEnd}
-        onDelete={mockOnDelete}
-      />
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
-
-    const input = screen.getByLabelText(/trip name/i);
-    fireEvent.change(input, {
-      target: {
-        value:
-          'SUPER DUPER LONG TEXT WHICH SHOULD BE INVALID BECAUSE IT IS TOO LONG!',
-      },
-    });
-
-    const saveButton = screen.getByRole('button', { name: /save changes/i });
-    fireEvent.click(saveButton);
-
-    expect(await screen.findByText(/trip name is too long/i)).toBeDefined();
   });
 
   test('disables "Save Trip Itinerary" button when there are no stops', () => {

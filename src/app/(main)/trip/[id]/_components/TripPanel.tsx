@@ -3,7 +3,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Edit, MapIcon, Route, Settings } from 'lucide-react';
+import { MapIcon, Route } from 'lucide-react';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -15,28 +15,11 @@ import {
 } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Trip } from '@/db/types';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+
 import { StopData, TripStopItem } from './TripStopItem';
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field';
-import { Controller, useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
-import z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+
 import { updateTripName } from '@/actions/trip';
-import { toast } from 'sonner';
+import EditTripDialog, { TripSchema } from './EditTripDialog';
 
 interface Props {
   trip: Trip;
@@ -44,15 +27,6 @@ interface Props {
   onDragEnd: (params: { activeId: string; overId: string }) => void;
   onDelete: (id: string) => void;
 }
-
-const tripSchema = z.object({
-  name: z
-    .string()
-    .min(3, 'Trip name is too short')
-    .max(32, 'Trip name is too long'),
-});
-
-type TripSchema = z.infer<typeof tripSchema>;
 
 export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
   const sensors = useSensors(
@@ -66,36 +40,11 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
     })
   );
 
-  const form = useForm<TripSchema>({
-    resolver: zodResolver(tripSchema),
-    defaultValues: {
-      name: trip.name,
-    },
-  });
-
-  const [isEditing, setIsEditing] = useState(false);
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
       onDragEnd({ activeId: active.id as string, overId: over.id as string });
-    }
-  };
-
-  const onSubmit = async (data: TripSchema) => {
-    try {
-      const result = await updateTripName(trip.id.toString(), data.name);
-
-      if (result.success) {
-        toast.success(result.message);
-        setIsEditing(false);
-        form.reset(data);
-      } else {
-        toast.error(result.message);
-      }
-    } catch (err) {
-      toast.error('An unexpected error occurred.');
     }
   };
 
@@ -116,63 +65,7 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
               reorder
             </p>
           </div>
-          <Dialog open={isEditing} onOpenChange={setIsEditing}>
-            <DialogTrigger
-              render={
-                <Button variant="ghost" aria-label="Settings">
-                  <Settings className="size-5" />
-                </Button>
-              }
-            />
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="tracking-tight">Edit Trip</DialogTitle>
-                <DialogDescription>
-                  Update your trip name and description.
-                </DialogDescription>
-              </DialogHeader>
-              <form
-                className="flex flex-col gap-4"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
-                <FieldGroup>
-                  <Controller
-                    name="name"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel
-                          className="text-foreground/80"
-                          htmlFor="trip-name"
-                        >
-                          Trip Name
-                        </FieldLabel>
-                        <Input
-                          id="trip-name"
-                          className="bg-background/50 border-input focus:ring-primary/20 focus:border-primary h-12 transition-all"
-                          type="text"
-                          placeholder="Enter your trip name"
-                          {...field}
-                        />
-                        {fieldState.invalid && (
-                          <FieldDescription className="text-destructive mt-1 text-xs font-medium">
-                            {fieldState.error?.message}
-                          </FieldDescription>
-                        )}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-                <Button
-                  type="submit"
-                  className="shadow-primary/20 w-full rounded-lg font-bold shadow-lg"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <EditTripDialog trip={trip} />
         </div>
       </div>
 
