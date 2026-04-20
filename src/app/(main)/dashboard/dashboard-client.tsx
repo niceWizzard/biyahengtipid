@@ -2,11 +2,13 @@
 
 import { Trip } from '@/db/types';
 import Link from 'next/link';
+import CreateTripButton from './_components/CreateTripButton';
 
 export default function DashboardClient({ trips }: { trips: Trip[] }) {
   return (
     <div className="min-h-screen">
-      <section className="px-4 py-8">
+      <section className="flex flex-col gap-4 px-4 py-8">
+        <CreateTripButton className="w-fit self-end" />
         <div className="flex flex-row flex-wrap gap-4">
           {trips.map((trip) => (
             <Link href={`/trip/${trip.id}`} key={trip.id}>

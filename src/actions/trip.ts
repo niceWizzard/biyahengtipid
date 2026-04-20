@@ -1,7 +1,7 @@
 'use server';
 
 import { requireEmailVerified } from '@/dal/emailVerified';
-import { getTripById, updateTripName as updateTripNameDal } from '@/dal/trip';
+import { createTrip, getTripById, updateTripName as updateTripNameDal } from '@/dal/trip';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -50,3 +50,16 @@ export const updateTripName = async (id: string, name: string) => {
     };
   }
 };
+
+
+export const createTripAction = async () => {
+  try {
+    const session = await requireEmailVerified();
+    const trip = await createTrip(session.user.id);
+    return { success: true, tripId : trip.id };
+  } catch (err) {
+    console.error(err);
+    return { success: false, message: 'Something went wrong.' };
+  }
+}
+

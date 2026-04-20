@@ -30,6 +30,15 @@ export const getTripById = async (id: string) => {
   return trip;
 };
 
+export const createTrip = async (userId: string) => {
+  const trip = await db.insert(tripsTable).values({
+    userId,
+    name: 'New Trip ' + Date.now().toString(),
+  }).returning();
+
+  return trip[0];
+};
+
 export const updateTripName = async (id: string, name: string) => {
   const parsedId = Number(id);
 
