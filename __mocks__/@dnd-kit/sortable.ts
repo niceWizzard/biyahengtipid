@@ -4,9 +4,7 @@ import type {
   useSortable as realUseSortable,
   UseSortableArguments,
 } from '@dnd-kit/sortable';
-import {
-  DraggableSyntheticListeners,
-} from '@dnd-kit/core';
+import { DraggableSyntheticListeners } from '@dnd-kit/core';
 
 export const SortableContext = ({ children }: { children: React.ReactNode }) =>
   React.createElement('div', { 'data-testid': 'sortable-context' }, children);
