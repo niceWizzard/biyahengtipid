@@ -15,9 +15,11 @@ import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
+import DeleteConfirmDialog from './DeleteConfirmDialog';
 
 export default function SettingsDropdown({ trip }: { trip: Trip }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
@@ -57,7 +59,7 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
               className="cursor-pointer"
               variant="destructive"
               closeOnClick={false}
-              onClick={handleDelete}
+              onClick={() => setIsDeleteDialogOpen(true)}
               disabled={isDeleting}
             >
               {isDeleting && <Spinner />}
@@ -70,6 +72,12 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
         trip={trip}
         isEditing={isEditing}
         onClose={() => setIsEditing(false)}
+      />
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+        isPending={isDeleting}
       />
     </>
   );

@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import SettingsDropdown from './SettingsDropDown';
 import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,19 @@ vi.mock('./EditTripDialog', () => ({
   __esModule: true,
   default: vi.fn(({ isEditing }) =>
     isEditing ? <div data-testid="edit-dialog">Edit Trip Dialog</div> : null
+  ),
+}));
+
+vi.mock('./DeleteConfirmDialog', () => ({
+  __esModule: true,
+  default: vi.fn(({ isOpen, onConfirm, isPending }) =>
+    isOpen ? (
+      <div data-testid="delete-confirm-dialog">
+        <button onClick={onConfirm} disabled={isPending}>
+          {isPending ? 'Deleting...' : 'Confirm Delete'}
+        </button>
+      </div>
+    ) : null
   ),
 }));
 
@@ -81,6 +94,9 @@ describe('SettingsDropdown', () => {
     fireEvent.click(screen.getByRole('button', { name: /settings/i }));
     fireEvent.click(await screen.findByText('Delete Trip'));
 
+    // Confirm in dialog
+    fireEvent.click(await screen.findByText('Confirm Delete'));
+
     await waitFor(() => {
       expect(deleteTripAction).toHaveBeenCalledWith('1');
     });
@@ -97,6 +113,9 @@ describe('SettingsDropdown', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /settings/i }));
     fireEvent.click(await screen.findByText('Delete Trip'));
+
+    // Confirm in dialog
+    fireEvent.click(await screen.findByText('Confirm Delete'));
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
@@ -118,17 +137,23 @@ describe('SettingsDropdown', () => {
     fireEvent.click(screen.getByRole('button', { name: /settings/i }));
     fireEvent.click(await screen.findByText('Delete Trip'));
 
-    expect(await screen.findByText('Deleting...')).toBeDefined();
-    const item = screen.getByText('Deleting...');
-    expect(item).not.toBeNull();
-    expect(item.hasAttribute('data-disabled')).toBe(true);
+    // Confirm in dialog
+    fireEvent.click(await screen.findByText('Confirm Delete'));
+
+    await waitFor(async () => {
+      const dialog = screen.getByTestId('delete-confirm-dialog');
+      expect(within(dialog).getByText('Deleting...')).toBeDefined();
+    }, { timeout: 2000 });
+
+    const dialog = screen.getByTestId('delete-confirm-dialog');
+    const confirmBtn = within(dialog).getByText('Deleting...');
+    expect(confirmBtn.hasAttribute('disabled')).toBe(true);
 
     // Resolve the promise
     resolveDelete!({ success: true });
 
-    expect(await screen.findByText('Delete Trip')).toBeDefined();
-    const item2 = screen.getByText('Delete Trip');
-    expect(item2).not.toBeNull();
-    expect(item2.hasAttribute('data-disabled')).toBe(false);
+    await waitFor(() => {
+      expect(screen.queryByText('Deleting...')).toBeNull();
+    });
   });
 });
