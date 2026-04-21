@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TripClient from './[id]/trip-client';
 import { Trip } from '@/db/types';
@@ -7,6 +7,22 @@ import { ComponentProps } from 'react';
 import MapComponent from './[id]/_components/MapComponent';
 import TripPanel from './[id]/_components/TripPanel';
 import { toast } from 'sonner';
+import { fetchDirections } from '@/lib/mapbox';
+
+vi.mock('@/lib/mapbox', () => ({
+  fetchDirections: vi.fn().mockResolvedValue({
+    routes: [
+      {
+        geometry: {
+          coordinates: [
+            [120, 14],
+            [121, 15],
+          ],
+        },
+      },
+    ],
+  }),
+}));
 
 if (!global.crypto.randomUUID) {
   Object.defineProperty(global, 'crypto', {
@@ -25,6 +41,13 @@ vi.mock('next/dynamic', () => ({
     ) {
       return (
         <div data-testid="map-component">
+          <div data-testid="navigation-path">
+            {props.navigationPath
+              ? props.navigationPath
+                  .map((p) => (p as number[]).join(','))
+                  .join('|')
+              : 'none'}
+          </div>
           <button onClick={() => props.onMapClick(10, 20)}>
             Add Stop (10, 20)
           </button>
@@ -118,6 +141,9 @@ describe('TripClient', () => {
     expect(screen.getByTestId('stops-count').textContent).toBe('1 stops');
     expect(screen.getByTestId('stop-lat-0').textContent).toBe('10');
     expect(screen.getByTestId('stop-lng-0').textContent).toBe('20');
+
+    // Ensure navigation path is settled
+    await screen.findByText('none');
   });
 
   it('deletes a stop when onDelete is triggered', async () => {
@@ -133,6 +159,9 @@ describe('TripClient', () => {
     fireEvent.click(screen.getByText(`Delete ${stopId}`));
 
     expect(screen.getByTestId('stops-count').textContent).toBe('0 stops');
+
+    // Ensure navigation path is settled
+    await screen.findByText('none');
   });
 
   it('updates stop location when onStopUpdateLocation is triggered', async () => {
@@ -148,6 +177,9 @@ describe('TripClient', () => {
     // Verify coordinates updated
     expect(screen.getByTestId('stop-lat-0').textContent).toBe('30');
     expect(screen.getByTestId('stop-lng-0').textContent).toBe('40');
+
+    // Ensure navigation path is settled
+    await screen.findByText('none');
   });
 
   it('reorders stops when onDragEnd is triggered', async () => {
@@ -168,6 +200,9 @@ describe('TripClient', () => {
     // Verify order swapped
     expect(screen.getByTestId('stop-id-0').textContent).toBe(stopId2);
     expect(screen.getByTestId('stop-id-1').textContent).toBe(stopId1);
+
+    // Ensure navigation path is settled (triggers for >= 2 stops)
+    await screen.findByText('14,120|15,121');
   });
 
   it('limits the number of stops to 25', async () => {
@@ -181,6 +216,9 @@ describe('TripClient', () => {
 
     expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');
 
+    // Wait for navigation path to settle from initial stops
+    await screen.findByText('14,120|15,121');
+
     // Try to add one more
     fireEvent.click(screen.getByText(/Add Stop/));
 
@@ -188,5 +226,89 @@ describe('TripClient', () => {
     expect(toast.error).toHaveBeenCalledWith(
       'Maximum number of stops reached (25)'
     );
+  });
+
+  it('fetches navigation path when 2 or more stops are present', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    // Add first stop
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    expect(screen.getByTestId('navigation-path').textContent).toBe('none');
+    expect(fetchDirections).not.toHaveBeenCalled();
+
+    // Add second stop
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    // Verify fetchDirections was called
+    await waitFor(() => {
+      expect(fetchDirections).toHaveBeenCalled();
+    });
+
+    // Verify navigation path is updated (swapped [lng, lat] to [lat, lng])
+    await screen.findByText('14,120|15,121');
+  });
+
+  it('clears navigation path when stops count drops below 2', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    // Add two stops
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    await screen.findByText('14,120|15,121');
+
+    const stopId1 = screen.getByTestId('stop-id-0').textContent;
+
+    // Delete one stop
+    fireEvent.click(screen.getByText(`Delete ${stopId1}`));
+
+    // Verify navigation path is cleared
+    await screen.findByText('none');
+  });
+
+  it('updates navigation path when stops are reordered', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    // Add two stops
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    await waitFor(() => {
+      expect(fetchDirections).toHaveBeenCalledTimes(1);
+    });
+
+    // Reorder stops
+    fireEvent.click(screen.getByTestId('reorder-button'));
+
+    // Verify fetchDirections was called again
+    await waitFor(() => {
+      expect(fetchDirections).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('updates navigation path when a stop is deleted from 3 stops', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    // Add three stops
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    await waitFor(() => {
+      expect(fetchDirections).toHaveBeenCalledTimes(2); // Called when 2nd and 3rd added
+    });
+
+    const stopId2 = screen.getByTestId('stop-id-1').textContent;
+
+    // Delete middle stop
+    fireEvent.click(screen.getByText(`Delete ${stopId2}`));
+
+    // Verify fetchDirections was called again (3rd time)
+    await waitFor(() => {
+      expect(fetchDirections).toHaveBeenCalledTimes(3);
+    });
+
+    // Verification path remains as fetchDirections returns same mock value
+    await screen.findByText('14,120|15,121');
   });
 });
