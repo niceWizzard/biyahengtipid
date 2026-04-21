@@ -31,11 +31,8 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
         router.push('/dashboard');
       }
     } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('Something went wrong while deleting trip.');
-      }
+      console.error('Error deleting trip:', err);
+      toast.error('Something went wrong while deleting trip.');
     } finally {
       setIsDeleting(false);
     }
