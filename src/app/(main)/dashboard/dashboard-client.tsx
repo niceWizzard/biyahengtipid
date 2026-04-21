@@ -23,6 +23,13 @@ export default function DashboardClient({ trips }: { trips: Trip[] }) {
               </div>
             </Link>
           ))}
+          {trips.length === 0 && (
+            <div className="flex w-full flex-col items-center justify-center gap-4">
+              <p className="text-muted-foreground">
+                No trips yet. Create some!
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </div>
