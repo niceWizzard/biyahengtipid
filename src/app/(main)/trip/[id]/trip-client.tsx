@@ -12,54 +12,7 @@ import { StopData } from './_components/TripStopItem';
 import TripPanel from './_components/TripPanel';
 import { DragEndEvent } from '@dnd-kit/core';
 
-enum TripActionType {
-  ADD_STOP = 'ADD_STOP',
-  DELETE_STOP = 'DELETE_STOP',
-  REORDER_STOPS = 'REORDER_STOPS',
-  UPDATE_STOP_LOCATION = 'UPDATE_STOP_LOCATION',
-}
-
-type TripAction =
-  | {
-      type: TripActionType.ADD_STOP;
-      payload: { lat: number; lng: number; id: string; name: string };
-    }
-  | {
-      type: TripActionType.DELETE_STOP;
-      payload: string;
-    }
-  | {
-      type: TripActionType.REORDER_STOPS;
-      payload: { activeId: string; overId: string };
-    }
-  | {
-      type: TripActionType.UPDATE_STOP_LOCATION;
-      payload: { id: string; lat: number; lng: number };
-    };
-
-function tripReducer(state: StopData[], action: TripAction): StopData[] {
-  switch (action.type) {
-    case TripActionType.ADD_STOP:
-      return [...state, { ...action.payload }];
-    case TripActionType.DELETE_STOP:
-      return state.filter((m) => m.id !== action.payload);
-    case TripActionType.UPDATE_STOP_LOCATION: {
-      const { id, lat, lng } = action.payload;
-      return state.map((m) => (m.id === id ? { ...m, lat, lng } : m));
-    }
-    case TripActionType.REORDER_STOPS: {
-      const { activeId, overId } = action.payload;
-      const oldIndex = state.findIndex((i) => i.id === activeId);
-      const newIndex = state.findIndex((i) => i.id === overId);
-      if (oldIndex !== -1 && newIndex !== -1) {
-        return arrayMove(state, oldIndex, newIndex);
-      }
-      return state;
-    }
-    default:
-      return state;
-  }
-}
+import { TripActionType, tripReducer } from './trip-reducer';
 
 export default function TripClient({ trip }: { trip: Trip }) {
   const MapComponent = useMemo(
@@ -83,6 +36,9 @@ export default function TripClient({ trip }: { trip: Trip }) {
   const handleDelete = (id: string) => {
     dispatch({ type: TripActionType.DELETE_STOP, payload: id });
   };
+  const handleRename = (id: string, name: string) => {
+    dispatch({ type: TripActionType.RENAME_STOP, payload: { id, name } });
+  };
 
   return (
     <div className="bg-background flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
@@ -90,6 +46,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
       <TripPanel
         trip={trip}
         onDelete={handleDelete}
+        onRename={handleRename}
         onDragEnd={handleDragEnd}
         stops={stops}
       />

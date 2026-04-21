@@ -2,33 +2,20 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TripPanel from './TripPanel';
 
-vi.mock('@dnd-kit/core', () => ({
-  DndContext: ({ children }: any) => <div>{children}</div>,
-  useSensor: vi.fn(),
-  useSensors: vi.fn(),
-  PointerSensor: vi.fn(),
-  KeyboardSensor: vi.fn(),
-  closestCenter: vi.fn(),
-}));
-
-vi.mock('@dnd-kit/sortable', () => ({
-  SortableContext: ({ children }: any) => <div>{children}</div>,
-  verticalListSortingStrategy: vi.fn(),
-  useSortable: () => ({
-    attributes: {},
-    listeners: {},
-    setNodeRef: vi.fn(),
-    transform: null,
-    transition: null,
-    isDragging: false,
-  }),
-  sortableKeyboardCoordinates: vi.fn(),
-}));
+// Mock dnd-kit using central mocks
+vi.mock('@dnd-kit/core');
+vi.mock('@dnd-kit/sortable');
 
 vi.mock('./TripStopItem', () => ({
-  TripStopItem: ({ stop, index, onDelete }: any) => (
+  TripStopItem: ({ stop, index, onDelete, onRename }: any) => (
     <div data-testid={`stop-item-${stop.id}`}>
       <span>{stop.name}</span>
+      <button
+        aria-label={`Rename stop ${stop.name}`}
+        onClick={() => onRename(stop.id, `Renamed ${stop.name}`)}
+      >
+        Rename
+      </button>
       <button
         aria-label={`Delete stop ${stop.name}`}
         onClick={() => onDelete(stop.id)}
@@ -58,6 +45,7 @@ describe('TripPanel', () => {
 
   const mockOnDragEnd = vi.fn();
   const mockOnDelete = vi.fn();
+  const mockOnRename = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -70,6 +58,7 @@ describe('TripPanel', () => {
         stops={mockStops}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -84,6 +73,7 @@ describe('TripPanel', () => {
         stops={mockStops}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -100,6 +90,7 @@ describe('TripPanel', () => {
         stops={mockStops}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -116,6 +107,7 @@ describe('TripPanel', () => {
         stops={[]}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -130,6 +122,7 @@ describe('TripPanel', () => {
         stops={mockStops}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -149,6 +142,7 @@ describe('TripPanel', () => {
         stops={[]}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -165,6 +159,7 @@ describe('TripPanel', () => {
         stops={mockStops}
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
+        onRename={mockOnRename}
       />
     );
 
@@ -172,5 +167,22 @@ describe('TripPanel', () => {
       name: /save trip itinerary/i,
     });
     expect(saveButton.hasAttribute('disabled')).toBe(false);
+  });
+
+  test('calls onRename when a stop is renamed', () => {
+    render(
+      <TripPanel
+        trip={mockTrip}
+        stops={mockStops}
+        onDragEnd={mockOnDragEnd}
+        onDelete={mockOnDelete}
+        onRename={mockOnRename}
+      />
+    );
+
+    const renameButton = screen.getByLabelText('Rename stop Stop 1');
+    fireEvent.click(renameButton);
+
+    expect(mockOnRename).toHaveBeenCalledWith('1', 'Renamed Stop 1');
   });
 });

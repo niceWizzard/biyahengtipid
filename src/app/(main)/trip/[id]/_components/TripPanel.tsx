@@ -27,9 +27,16 @@ interface Props {
   stops: StopData[];
   onDragEnd: (params: { activeId: string; overId: string }) => void;
   onDelete: (id: string) => void;
+  onRename: (id: string, name: string) => void;
 }
 
-export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
+export default function TripPanel({
+  trip,
+  stops,
+  onDragEnd,
+  onDelete,
+  onRename,
+}: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -110,6 +117,7 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
                     stop={marker}
                     index={index}
                     onDelete={onDelete}
+                    onRename={onRename}
                   />
                 ))}
               </div>
