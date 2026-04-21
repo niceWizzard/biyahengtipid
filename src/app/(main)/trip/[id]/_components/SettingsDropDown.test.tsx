@@ -1,5 +1,11 @@
 /// <reference types="vitest/globals" />
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import SettingsDropdown from './SettingsDropDown';
 import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
@@ -140,10 +146,13 @@ describe('SettingsDropdown', () => {
     // Confirm in dialog
     fireEvent.click(await screen.findByText('Confirm Delete'));
 
-    await waitFor(async () => {
-      const dialog = screen.getByTestId('delete-confirm-dialog');
-      expect(within(dialog).getByText('Deleting...')).toBeDefined();
-    }, { timeout: 2000 });
+    await waitFor(
+      async () => {
+        const dialog = screen.getByTestId('delete-confirm-dialog');
+        expect(within(dialog).getByText('Deleting...')).toBeDefined();
+      },
+      { timeout: 2000 }
+    );
 
     const dialog = screen.getByTestId('delete-confirm-dialog');
     const confirmBtn = within(dialog).getByText('Deleting...');

@@ -69,7 +69,9 @@ describe('trip actions', () => {
       vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
       vi.mocked(getTripById).mockResolvedValue(mockTrip as any);
       vi.mocked(updateTripNameDal).mockRejectedValueOnce(new Error('DB Error'));
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       const result = await updateTripName('1', 'New Name');
 
@@ -97,11 +99,16 @@ describe('trip actions', () => {
     it('should return failure if creation fails', async () => {
       vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
       vi.mocked(createTrip).mockRejectedValueOnce(new Error('Creation failed'));
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       const result = await createTripAction();
 
-      expect(result).toEqual({ success: false, message: 'Something went wrong.' });
+      expect(result).toEqual({
+        success: false,
+        message: 'Something went wrong.',
+      });
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
@@ -147,16 +154,18 @@ describe('trip actions', () => {
       vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
       vi.mocked(getTripById).mockResolvedValue(mockTrip as any);
       vi.mocked(deleteTrip).mockRejectedValueOnce(new Error('Deletion failed'));
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       const result = await deleteTripAction('1');
 
-      expect(result).toEqual({ success: false, message: 'Something went wrong.' });
+      expect(result).toEqual({
+        success: false,
+        message: 'Something went wrong.',
+      });
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
   });
 });
-
-
-

@@ -1,7 +1,13 @@
 import { vi } from 'vitest';
 import React from 'react';
-import type { useSortable as realUseSortable, UseSortableArguments } from '@dnd-kit/sortable';
-import { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core';
+import type {
+  useSortable as realUseSortable,
+  UseSortableArguments,
+} from '@dnd-kit/sortable';
+import {
+  DraggableAttributes,
+  DraggableSyntheticListeners,
+} from '@dnd-kit/core';
 
 export const SortableContext = ({ children }: { children: React.ReactNode }) =>
   React.createElement('div', { 'data-testid': 'sortable-context' }, children);
@@ -9,11 +15,13 @@ export const SortableContext = ({ children }: { children: React.ReactNode }) =>
 export const verticalListSortingStrategy = vi.fn();
 export const sortableKeyboardCoordinates = vi.fn();
 
-export const arrayMove = vi.fn(<T,>(array: T[], from: number, to: number): T[] => {
-  const newArray = array.slice();
-  newArray.splice(to, 0, newArray.splice(from, 1)[0]);
-  return newArray;
-});
+export const arrayMove = vi.fn(
+  <T>(array: T[], from: number, to: number): T[] => {
+    const newArray = array.slice();
+    newArray.splice(to, 0, newArray.splice(from, 1)[0]);
+    return newArray;
+  }
+);
 
 // Create a type that satisfies the return of useSortable
 export type UseSortableReturn = ReturnType<typeof realUseSortable>;
@@ -58,6 +66,8 @@ export const defaultUseSortableReturn: UseSortableReturn = {
   isOver: false,
 };
 
-export const useSortable = vi.fn((_args: UseSortableArguments): UseSortableReturn => {
-  return defaultUseSortableReturn;
-});
+export const useSortable = vi.fn(
+  (_args: UseSortableArguments): UseSortableReturn => {
+    return defaultUseSortableReturn;
+  }
+);
