@@ -29,6 +29,8 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
       const res = await deleteTripAction(trip.id.toString());
       if (res.success) {
         router.push('/dashboard');
+      } else {
+        toast.error(res.message || 'Something went wrong while deleting trip.');
       }
     } catch (err) {
       console.error('Error deleting trip:', err);

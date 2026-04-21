@@ -113,7 +113,27 @@ describe('SettingsDropdown', () => {
   });
 
   test('shows error toast on delete failure', async () => {
-    vi.mocked(deleteTripAction).mockRejectedValue(new Error('Delete failed'));
+    vi.mocked(deleteTripAction).mockResolvedValue({
+      success: false,
+      message: 'Failed to delete trip',
+    });
+
+    render(<SettingsDropdown trip={mockTrip} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    fireEvent.click(await screen.findByText('Delete Trip'));
+
+    // Confirm in dialog
+    fireEvent.click(await screen.findByText('Confirm Delete'));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Failed to delete trip');
+    });
+  });
+
+  test('shows error toast when deleteTripAction throws', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(deleteTripAction).mockRejectedValue(new Error('Network Error'));
 
     render(<SettingsDropdown trip={mockTrip} />);
 
@@ -128,6 +148,9 @@ describe('SettingsDropdown', () => {
         'Something went wrong while deleting trip.'
       );
     });
+
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 
   test('shows loading state while deleting', async () => {
