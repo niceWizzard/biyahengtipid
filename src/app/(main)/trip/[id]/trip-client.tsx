@@ -10,8 +10,16 @@ import dynamic from 'next/dynamic';
 import TripPanel from './_components/TripPanel';
 
 import { TripActionType, tripReducer } from './trip-reducer';
+import { toast } from 'sonner';
+import { StopData } from './_components/TripStopItem';
 
-export default function TripClient({ trip }: { trip: Trip }) {
+export default function TripClient({
+  trip,
+  initialStops,
+}: {
+  trip: Trip;
+  initialStops?: StopData[];
+}) {
   const MapComponent = useMemo(
     () =>
       dynamic(() => import('./_components/MapComponent'), {
@@ -24,7 +32,7 @@ export default function TripClient({ trip }: { trip: Trip }) {
       }),
     []
   );
-  const [stops, dispatch] = useReducer(tripReducer, []);
+  const [stops, dispatch] = useReducer(tripReducer, initialStops || []);
 
   const handleDragEnd = (params: { activeId: string; overId: string }) => {
     dispatch({ type: TripActionType.REORDER_STOPS, payload: params });
