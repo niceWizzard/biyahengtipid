@@ -3,7 +3,7 @@
 import { Trip } from '@/db/types';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
-import { useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -12,6 +12,7 @@ import TripPanel from './_components/TripPanel';
 import { TripActionType, tripReducer } from './trip-reducer';
 import { toast } from 'sonner';
 import { StopData } from './_components/TripStopItem';
+import { fetchDirections } from '@/lib/mapbox';
 
 export default function TripClient({
   trip,
@@ -33,6 +34,27 @@ export default function TripClient({
     []
   );
   const [stops, dispatch] = useReducer(tripReducer, initialStops || []);
+  const [navigationPath, setNavigationPath] = useState<
+    [number, number][] | undefined
+  >(undefined);
+
+  useEffect(() => {
+    const fetchNavigationPath = async () => {
+      if (stops.length < 2) return;
+      const res = await fetchDirections({
+        waypoints: stops.map((s) => [s.lng, s.lat]),
+      });
+      const geom = res.routes[0].geometry.coordinates.map(
+        (c) => [c[1], c[0]] as [number, number]
+      );
+      setNavigationPath(geom);
+    };
+    if (stops.length >= 2) {
+      fetchNavigationPath();
+    } else {
+      setNavigationPath(undefined);
+    }
+  }, [stops]);
 
   const handleDragEnd = (params: { activeId: string; overId: string }) => {
     dispatch({ type: TripActionType.REORDER_STOPS, payload: params });
@@ -59,6 +81,7 @@ export default function TripClient({
       {/* Map Panel */}
       <div className="bg-muted/20 relative z-0 h-1/2 flex-1 lg:h-full">
         <MapComponent
+          navigationPath={navigationPath}
           markers={stops}
           onMapClick={(lat, lng) => {
             if (stops.length >= 25) {

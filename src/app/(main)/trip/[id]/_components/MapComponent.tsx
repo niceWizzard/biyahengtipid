@@ -8,6 +8,7 @@ import {
   TileLayer,
   useMapEvents,
 } from 'react-leaflet';
+import { ComponentProps } from 'react';
 
 const getNumberedIcon = (index: number) => {
   if (typeof window === 'undefined') return undefined;
@@ -43,10 +44,12 @@ export default function MapComponent({
   markers,
   onMapClick,
   onStopUpdateLocation,
+  navigationPath,
 }: {
   markers: { id: string; lat: number; lng: number }[];
   onMapClick: (lat: number, lng: number) => void;
   onStopUpdateLocation: (id: string, lat: number, lng: number) => void;
+  navigationPath?: ComponentProps<typeof Polyline>['positions'];
 }) {
   return (
     <MapContainer
@@ -98,7 +101,7 @@ export default function MapComponent({
         );
       })}
       <Polyline
-        positions={markers.map((m) => [m.lat, m.lng])}
+        positions={navigationPath || markers.map((m) => [m.lat, m.lng])}
         color="#3b82f6"
         weight={4}
         opacity={0.7}
