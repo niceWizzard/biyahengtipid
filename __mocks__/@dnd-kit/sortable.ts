@@ -5,7 +5,6 @@ import type {
   UseSortableArguments,
 } from '@dnd-kit/sortable';
 import {
-  DraggableAttributes,
   DraggableSyntheticListeners,
 } from '@dnd-kit/core';
 

@@ -18,8 +18,6 @@ import { Trip } from '@/db/types';
 
 import { StopData, TripStopItem } from './TripStopItem';
 
-import { updateTripName } from '@/actions/trip';
-import EditTripDialog, { TripSchema } from './EditTripDialog';
 import SettingsDropdown from './SettingsDropDown';
 
 interface Props {

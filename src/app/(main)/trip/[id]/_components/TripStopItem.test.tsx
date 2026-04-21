@@ -2,9 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { TripStopItem, StopData } from './TripStopItem';
 import { useSortable } from '@dnd-kit/sortable';
-import type { UseSortableReturn } from '../../../../../../__mocks__/@dnd-kit/sortable';
 import { defaultUseSortableReturn } from '../../../../../../__mocks__/@dnd-kit/sortable';
-import { DraggableAttributes } from '@dnd-kit/core';
 
 // Mock dnd-kit using central mocks
 vi.mock('@dnd-kit/sortable');

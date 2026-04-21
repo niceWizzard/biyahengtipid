@@ -7,10 +7,7 @@ import { useMemo, useReducer } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { arrayMove } from '@dnd-kit/sortable';
-import { StopData } from './_components/TripStopItem';
 import TripPanel from './_components/TripPanel';
-import { DragEndEvent } from '@dnd-kit/core';
 
 import { TripActionType, tripReducer } from './trip-reducer';
 
