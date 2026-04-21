@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { tripReducer, TripActionType } from './trip-reducer';
+import { tripReducer, TripActionType, TripAction } from './trip-reducer';
 import { StopData } from './_components/TripStopItem';
 
 describe('tripReducer', () => {
@@ -12,8 +12,8 @@ describe('tripReducer', () => {
     const action = {
       type: TripActionType.RENAME_STOP,
       payload: { id: '1', name: 'New Name' },
-    };
-    const newState = tripReducer(initialState, action as any);
+    } satisfies TripAction;
+    const newState = tripReducer(initialState, action);
 
     expect(newState).toHaveLength(2);
     expect(newState[0].name).toBe('New Name');
@@ -24,8 +24,8 @@ describe('tripReducer', () => {
     const action = {
       type: TripActionType.DELETE_STOP,
       payload: '1',
-    };
-    const newState = tripReducer(initialState, action as any);
+    } satisfies TripAction;
+    const newState = tripReducer(initialState, action);
 
     expect(newState).toHaveLength(1);
     expect(newState[0].id).toBe('2');
@@ -36,8 +36,8 @@ describe('tripReducer', () => {
     const action = {
       type: TripActionType.ADD_STOP,
       payload: newStop,
-    };
-    const newState = tripReducer(initialState, action as any);
+    } satisfies TripAction;
+    const newState = tripReducer(initialState, action);
 
     expect(newState).toHaveLength(3);
     expect(newState[2]).toEqual(newStop);
@@ -47,8 +47,8 @@ describe('tripReducer', () => {
     const action = {
       type: TripActionType.REORDER_STOPS,
       payload: { activeId: '1', overId: '2' },
-    };
-    const newState = tripReducer(initialState, action as any);
+    } satisfies TripAction;
+    const newState = tripReducer(initialState, action);
 
     expect(newState[0].id).toBe('2');
     expect(newState[1].id).toBe('1');

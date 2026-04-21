@@ -18,7 +18,7 @@ if (!global.crypto.randomUUID) {
 }
 
 vi.mock('next/dynamic', () => ({
-  default: (loader: any) => {
+  default: () => {
     return function MockMapComponent(
       props: ComponentProps<typeof MapComponent>
     ) {
@@ -27,7 +27,7 @@ vi.mock('next/dynamic', () => ({
           <button onClick={() => props.onMapClick(10, 20)}>
             Add Stop (10, 20)
           </button>
-          {props.markers.map((marker: any) => (
+          {props.markers.map((marker: (typeof props.markers)[0]) => (
             <div key={marker.id} data-testid={`map-marker-${marker.id}`}>
               <button
                 onClick={() => props.onStopUpdateLocation(marker.id, 30, 40)}
@@ -49,7 +49,7 @@ vi.mock('./[id]/_components/TripPanel', () => ({
         <h1 data-testid="trip-name">{props.trip.name}</h1>
         <div data-testid="stops-count">{props.stops.length} stops</div>
         <div data-testid="stops-list">
-          {props.stops.map((stop: any, index: number) => (
+          {props.stops.map((stop: StopData, index: number) => (
             <div key={stop.id} data-testid={`stop-item-${index}`}>
               <span data-testid={`stop-id-${index}`}>{stop.id}</span>
               <span data-testid={`stop-lat-${index}`}>{stop.lat}</span>

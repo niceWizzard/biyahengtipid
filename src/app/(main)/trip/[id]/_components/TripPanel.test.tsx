@@ -1,13 +1,20 @@
 /// <reference types="vitest/globals" />
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TripPanel from './TripPanel';
+import { ComponentProps } from 'react';
+import { TripStopItem } from './TripStopItem';
 
 // Mock dnd-kit using central mocks
 vi.mock('@dnd-kit/core');
 vi.mock('@dnd-kit/sortable');
 
 vi.mock('./TripStopItem', () => ({
-  TripStopItem: ({ stop, index, onDelete, onRename }: any) => (
+  TripStopItem: ({
+    stop,
+    index,
+    onDelete,
+    onRename,
+  }: ComponentProps<typeof TripStopItem>) => (
     <div data-testid={`stop-item-${stop.id}`}>
       <span>{stop.name}</span>
       <button

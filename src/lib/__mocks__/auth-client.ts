@@ -2,9 +2,8 @@ import { vi } from 'vitest';
 
 export const authClient = {
   signOut: vi.fn(async (options) => {
-    // @ts-ignore
     await options?.fetchOptions?.onSuccess?.();
-    return {} as any;
+    return {};
   }),
   useSession: vi.fn(() => ({
     data: {
