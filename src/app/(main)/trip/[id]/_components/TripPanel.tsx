@@ -53,12 +53,12 @@ export default function TripPanel({ trip, stops, onDragEnd, onDelete }: Props) {
     <div className="bg-card/50 relative z-10 flex h-1/2 w-full flex-col border-r shadow-2xl backdrop-blur-3xl lg:h-full lg:w-[420px] xl:w-[480px]">
       {/* Header Section */}
       <div className="bg-background/80 sticky top-0 z-20 flex flex-col border-b p-6 backdrop-blur-md">
-        <div className="mb-1 flex items-center justify-center gap-3">
+        <div className="mb-1 flex items-center gap-3">
           <div className="bg-primary/10 rounded-2xl p-2.5">
             <Route className="text-primary size-6" />
           </div>
           <div className="flex-1">
-            <h2 className="from-foreground to-foreground/70 truncate bg-linear-to-r bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
+            <h2 className="from-foreground to-foreground/70 bg-linear-to-r bg-clip-text text-2xl font-extrabold tracking-tight wrap-break-word text-transparent">
               {trip.name}
             </h2>
             <p className="text-muted-foreground text-sm font-medium">
