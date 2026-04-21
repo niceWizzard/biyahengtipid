@@ -214,8 +214,8 @@ export function TripStopItem({
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove "{stop.name}" from your trip. <br /> This action
-              is local and can be reverted by not saving the trip.
+              This will remove &quot;{stop.name}&quot; from your trip. <br />{' '}
+              This action is local and can be reverted by not saving the trip.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
