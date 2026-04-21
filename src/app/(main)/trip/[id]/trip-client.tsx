@@ -61,6 +61,10 @@ export default function TripClient({
         <MapComponent
           markers={stops}
           onMapClick={(lat, lng) => {
+            if (stops.length >= 25) {
+              toast.error('Maximum number of stops reached (25)');
+              return;
+            }
             dispatch({
               type: TripActionType.ADD_STOP,
               payload: {

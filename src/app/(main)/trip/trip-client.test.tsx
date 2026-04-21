@@ -6,6 +6,7 @@ import { StopData } from './[id]/_components/TripStopItem';
 import { ComponentProps } from 'react';
 import MapComponent from './[id]/_components/MapComponent';
 import TripPanel from './[id]/_components/TripPanel';
+import { toast } from 'sonner';
 
 if (!global.crypto.randomUUID) {
   Object.defineProperty(global, 'crypto', {
@@ -81,6 +82,8 @@ vi.mock('./[id]/_components/TripPanel', () => ({
 vi.mock('./[id]/_components/MapComponent', () => ({
   default: () => <div data-testid="real-map-component">Real Map</div>,
 }));
+
+vi.mock('sonner');
 
 const mockTrip: Trip = {
   id: 1,
@@ -165,5 +168,25 @@ describe('TripClient', () => {
     // Verify order swapped
     expect(screen.getByTestId('stop-id-0').textContent).toBe(stopId2);
     expect(screen.getByTestId('stop-id-1').textContent).toBe(stopId1);
+  });
+
+  it('limits the number of stops to 25', async () => {
+    const stops = Array.from({ length: 25 }, (_, i) => ({
+      id: i.toString(),
+      lat: i,
+      lng: i,
+      name: i.toString(),
+    }));
+    render(<TripClient trip={mockTrip} initialStops={stops} />);
+
+    expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');
+
+    // Try to add one more
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');
+    expect(toast.error).toHaveBeenCalledWith(
+      'Maximum number of stops reached (25)'
+    );
   });
 });
