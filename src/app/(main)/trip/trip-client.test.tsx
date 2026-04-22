@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TripClient from './[id]/trip-client';
 import { Trip } from '@/db/types';
 import { StopData } from './[id]/_components/TripStopItem';
-import { ComponentProps } from 'react';
+import { act, ComponentProps } from 'react';
 import MapComponent from './[id]/_components/MapComponent';
 import TripPanel from './[id]/_components/TripPanel';
 import { toast } from 'sonner';
@@ -119,6 +119,11 @@ const mockTrip: Trip = {
 describe('TripClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('renders correctly with initial state', async () => {
@@ -133,76 +138,78 @@ describe('TripClient', () => {
   it('adds a stop when onMapClick is triggered', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Trigger add stop through the mock UI
     const addStopButton = await screen.findByText(/Add Stop/);
     fireEvent.click(addStopButton);
 
-    // Verify stop was added
     expect(screen.getByTestId('stops-count').textContent).toBe('1 stops');
     expect(screen.getByTestId('stop-lat-0').textContent).toBe('10');
     expect(screen.getByTestId('stop-lng-0').textContent).toBe('20');
 
-    // Ensure navigation path is settled
-    await screen.findByText('none');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
+    expect(screen.getByText('none')).toBeDefined();
   });
 
   it('deletes a stop when onDelete is triggered', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Add a stop first
     fireEvent.click(await screen.findByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
     expect(screen.getByTestId('stops-count').textContent).toBe('1 stops');
 
     const stopId = screen.getByTestId('stop-id-0').textContent;
 
-    // Delete the stop
     fireEvent.click(screen.getByText(`Delete ${stopId}`));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
 
     expect(screen.getByTestId('stops-count').textContent).toBe('0 stops');
-
-    // Ensure navigation path is settled
-    await screen.findByText('none');
+    expect(screen.getByText('none')).toBeDefined();
   });
 
   it('updates stop location when onStopUpdateLocation is triggered', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Add a stop
     fireEvent.click(await screen.findByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
     const stopId = screen.getByTestId('stop-id-0').textContent;
 
-    // Trigger update melalui mock MapComponent
     fireEvent.click(screen.getByText(new RegExp(`Update ${stopId}`)));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
 
-    // Verify coordinates updated
     expect(screen.getByTestId('stop-lat-0').textContent).toBe('30');
     expect(screen.getByTestId('stop-lng-0').textContent).toBe('40');
-
-    // Ensure navigation path is settled
-    await screen.findByText('none');
+    expect(screen.getByText('none')).toBeDefined();
   });
 
   it('reorders stops when onDragEnd is triggered', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Add two stops
     fireEvent.click(await screen.findByText(/Add Stop/));
-    const stopId1 = screen.getByTestId('stop-id-0').textContent;
-
     fireEvent.click(screen.getByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
+
+    const stopId1 = screen.getByTestId('stop-id-0').textContent;
     const stopId2 = screen.getByTestId('stop-id-1').textContent;
 
-    expect(stopId1).not.toBe(stopId2);
-
-    // Swap them
     fireEvent.click(screen.getByTestId('reorder-button'));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
 
-    // Verify order swapped
     expect(screen.getByTestId('stop-id-0').textContent).toBe(stopId2);
     expect(screen.getByTestId('stop-id-1').textContent).toBe(stopId1);
-
-    // Ensure navigation path is settled (triggers for >= 2 stops)
-    await screen.findByText('14,120|15,121');
+    expect(screen.getByText('14,120|15,121')).toBeDefined();
   });
 
   it('limits the number of stops to 25', async () => {
@@ -216,10 +223,12 @@ describe('TripClient', () => {
 
     expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');
 
-    // Wait for navigation path to settle from initial stops
-    await screen.findByText('14,120|15,121');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
 
-    // Try to add one more
+    expect(screen.getByText('14,120|15,121')).toBeDefined();
+
     fireEvent.click(screen.getByText(/Add Stop/));
 
     expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');
@@ -231,84 +240,80 @@ describe('TripClient', () => {
   it('fetches navigation path when 2 or more stops are present', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Add first stop
     fireEvent.click(await screen.findByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
     expect(screen.getByTestId('navigation-path').textContent).toBe('none');
     expect(fetchDirections).not.toHaveBeenCalled();
 
-    // Add second stop
     fireEvent.click(screen.getByText(/Add Stop/));
-
-    // Verify fetchDirections was called
-    await waitFor(() => {
-      expect(fetchDirections).toHaveBeenCalled();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
     });
 
-    // Verify navigation path is updated (swapped [lng, lat] to [lat, lng])
-    await screen.findByText('14,120|15,121');
+    expect(fetchDirections).toHaveBeenCalled();
+    expect(screen.getByText('14,120|15,121')).toBeDefined();
   });
 
   it('clears navigation path when stops count drops below 2', async () => {
     render(<TripClient trip={mockTrip} />);
 
-    // Add two stops
     fireEvent.click(await screen.findByText(/Add Stop/));
     fireEvent.click(screen.getByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
 
-    await screen.findByText('14,120|15,121');
+    expect(screen.getByText('14,120|15,121')).toBeDefined();
 
     const stopId1 = screen.getByTestId('stop-id-0').textContent;
 
-    // Delete one stop
     fireEvent.click(screen.getByText(`Delete ${stopId1}`));
-
-    // Verify navigation path is cleared
-    await screen.findByText('none');
-  });
-
-  it('updates navigation path when stops are reordered', async () => {
-    render(<TripClient trip={mockTrip} />);
-
-    // Add two stops
-    fireEvent.click(await screen.findByText(/Add Stop/));
-    fireEvent.click(screen.getByText(/Add Stop/));
-
-    await waitFor(() => {
-      expect(fetchDirections).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
     });
 
-    // Reorder stops
+    expect(screen.getByText('none')).toBeDefined();
+  });
+
+  it('handles rapid clicks by debouncing API calls', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    // Rapidly add 3 stops
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    // Time hasn't passed yet
+    expect(fetchDirections).not.toHaveBeenCalled();
+
+    // Advance time by 500ms
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
+
+    // Should only have been called once despite 3 stops being added
+    expect(fetchDirections).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('14,120|15,121')).toBeDefined();
+  });
+
+  it('updates navigation path when stops are reordered with debounce', async () => {
+    render(<TripClient trip={mockTrip} />);
+
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
+
+    expect(fetchDirections).toHaveBeenCalledTimes(1);
+
     fireEvent.click(screen.getByTestId('reorder-button'));
-
-    // Verify fetchDirections was called again
-    await waitFor(() => {
-      expect(fetchDirections).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  it('updates navigation path when a stop is deleted from 3 stops', async () => {
-    render(<TripClient trip={mockTrip} />);
-
-    // Add three stops
-    fireEvent.click(await screen.findByText(/Add Stop/));
-    fireEvent.click(screen.getByText(/Add Stop/));
-    fireEvent.click(screen.getByText(/Add Stop/));
-
-    await waitFor(() => {
-      expect(fetchDirections).toHaveBeenCalledTimes(2); // Called when 2nd and 3rd added
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
     });
 
-    const stopId2 = screen.getByTestId('stop-id-1').textContent;
-
-    // Delete middle stop
-    fireEvent.click(screen.getByText(`Delete ${stopId2}`));
-
-    // Verify fetchDirections was called again (3rd time)
-    await waitFor(() => {
-      expect(fetchDirections).toHaveBeenCalledTimes(3);
-    });
-
-    // Verification path remains as fetchDirections returns same mock value
-    await screen.findByText('14,120|15,121');
+    expect(fetchDirections).toHaveBeenCalledTimes(2);
   });
 });

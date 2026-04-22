@@ -62,6 +62,7 @@ const fetchDirectionsChunk = async ({
   overview = 'full',
   profile = 'driving',
   exclude = [],
+  signal,
 }: {
   waypoints: [number, number][];
   steps?: boolean;
@@ -70,6 +71,7 @@ const fetchDirectionsChunk = async ({
   overview?: 'full' | 'simplified' | 'false';
   profile?: 'driving' | 'walking' | 'cycling';
   exclude?: string[];
+  signal?: AbortSignal;
 }): Promise<MapboxResponse> => {
   const coordinates = waypoints.map((v) => v.join(',')).join(';');
   const url = new URL(`${MAPBOX_DIRECTIONS_URL}/${profile}/` + coordinates);
@@ -80,14 +82,18 @@ const fetchDirectionsChunk = async ({
   url.searchParams.set('overview', overview);
   if (exclude.length > 0) url.searchParams.set('exclude', exclude.join(','));
   try {
-    const response = await fetch(url.toString());
+    const response = await fetch(url.toString(), { signal });
     const data: MapboxResponse = await response.json();
     if (data.code !== 'Ok')
       throw new Error(
         `Mapbox API Error code: ${data.code}. ${JSON.stringify(data, null, 2)}`
       );
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      console.log('Fetch aborted');
+      throw error;
+    }
     console.error(error);
     throw error;
   }
@@ -101,6 +107,7 @@ export const fetchDirections = async (params: {
   overview?: 'full' | 'simplified' | 'false';
   profile?: 'driving' | 'walking' | 'cycling';
   exclude?: string[];
+  signal?: AbortSignal;
 }): Promise<MapboxResponse> => {
   if (params.waypoints.length <= MAX_WAYPOINTS) {
     return fetchDirectionsChunk(params);

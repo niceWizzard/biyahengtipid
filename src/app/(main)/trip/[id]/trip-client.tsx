@@ -39,21 +39,31 @@ export default function TripClient({
   >(undefined);
 
   useEffect(() => {
-    const fetchNavigationPath = async () => {
-      if (stops.length < 2) return;
-      const res = await fetchDirections({
-        waypoints: stops.map((s) => [s.lng, s.lat]),
-      });
-      const geom = res.routes[0].geometry.coordinates.map(
-        (c) => [c[1], c[0]] as [number, number]
-      );
-      setNavigationPath(geom);
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      if (stops.length < 2) {
+        setNavigationPath(undefined);
+        return;
+      }
+      try {
+        const res = await fetchDirections({
+          waypoints: stops.map((s) => [s.lng, s.lat]),
+          signal: controller.signal,
+        });
+        const geom = res.routes[0].geometry.coordinates.map(
+          (c) => [c[1], c[0]] as [number, number]
+        );
+        setNavigationPath(geom);
+      } catch (error: any) {
+        if (error.name === 'AbortError') return;
+        console.error('Failed to fetch navigation path:', error);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
     };
-    if (stops.length >= 2) {
-      fetchNavigationPath();
-    } else {
-      setNavigationPath(undefined);
-    }
   }, [stops]);
 
   const handleDragEnd = (params: { activeId: string; overId: string }) => {
