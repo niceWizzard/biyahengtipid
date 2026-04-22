@@ -8,6 +8,7 @@ import { useEffect, useMemo, useReducer, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import TripPanel from './_components/TripPanel';
+import { Spinner } from '@/components/ui/spinner';
 
 import { TripActionType, tripReducer } from './trip-reducer';
 import { toast } from 'sonner';
@@ -40,12 +41,14 @@ export default function TripClient({
 
   useEffect(() => {
     const controller = new AbortController();
-    const timer = setTimeout(async () => {
+
+    async function updateDirections() {
       if (stops.length < 2) {
         setNavigationPath(undefined);
         return;
       }
       try {
+        toast.loading('Finding path...', { id: 'nav-fetch' });
         const res = await fetchDirections({
           waypoints: stops.map((s) => [s.lng, s.lat]),
           signal: controller.signal,
@@ -57,8 +60,12 @@ export default function TripClient({
       } catch (error: any) {
         if (error.name === 'AbortError') return;
         console.error('Failed to fetch navigation path:', error);
+      } finally {
+        toast.dismiss('nav-fetch');
       }
-    }, 500);
+    }
+
+    const timer = setTimeout(updateDirections, 500);
 
     return () => {
       clearTimeout(timer);
@@ -78,7 +85,7 @@ export default function TripClient({
   };
 
   return (
-    <div className="bg-background flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
+    <div className="bg-background relative flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
       {/* Sidebar / List Panel */}
       <TripPanel
         trip={trip}

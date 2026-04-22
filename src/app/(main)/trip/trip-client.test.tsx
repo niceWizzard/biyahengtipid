@@ -106,7 +106,14 @@ vi.mock('./[id]/_components/MapComponent', () => ({
   default: () => <div data-testid="real-map-component">Real Map</div>,
 }));
 
-vi.mock('sonner');
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    loading: vi.fn(),
+    dismiss: vi.fn(),
+  },
+}));
 
 const mockTrip: Trip = {
   id: 1,
@@ -315,5 +322,45 @@ describe('TripClient', () => {
     });
 
     expect(fetchDirections).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows loading indicator while fetching navigation path', async () => {
+    let resolveDirections: any;
+    const directionsPromise = new Promise((resolve) => {
+      resolveDirections = resolve;
+    });
+
+    vi.mocked(fetchDirections).mockReturnValue(directionsPromise as any);
+
+    render(<TripClient trip={mockTrip} />);
+
+    fireEvent.click(await screen.findByText(/Add Stop/));
+    fireEvent.click(screen.getByText(/Add Stop/));
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500);
+    });
+
+    expect(toast.loading).toHaveBeenCalledWith('Finding path...', {
+      id: 'nav-fetch',
+    });
+
+    await act(async () => {
+      resolveDirections({
+        routes: [
+          {
+            geometry: {
+              coordinates: [
+                [120, 14],
+                [121, 15],
+              ],
+            },
+          },
+        ],
+      });
+      await directionsPromise;
+    });
+
+    expect(toast.dismiss).toHaveBeenCalledWith('nav-fetch');
   });
 });
