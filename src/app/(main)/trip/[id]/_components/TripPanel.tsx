@@ -13,6 +13,8 @@ import {
   DndContext,
   closestCenter,
 } from '@dnd-kit/core';
+import { Spinner } from '@/components/ui/spinner';
+import { fetchDirections } from '@/lib/mapbox';
 import { Button } from '@/components/ui/button';
 import { Trip } from '@/db/types';
 
@@ -26,6 +28,8 @@ interface Props {
   onDragEnd: (params: { activeId: string; overId: string }) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
+  onSave: () => void;
+  isSaving: boolean;
 }
 
 export default function TripPanel({
@@ -34,6 +38,8 @@ export default function TripPanel({
   onDragEnd,
   onDelete,
   onRename,
+  onSave,
+  isSaving,
 }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -94,6 +100,7 @@ export default function TripPanel({
           </div>
         ) : (
           <DndContext
+            id="trip-stops-dnd"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
@@ -129,9 +136,17 @@ export default function TripPanel({
         <Button
           size="lg"
           className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
-          disabled={stops.length === 0}
+          disabled={stops.length === 0 || isSaving}
+          onClick={onSave}
         >
-          Save Trip Itinerary
+          {isSaving ? (
+            <>
+              <Spinner className="mr-2 h-4 w-4" />
+              Saving Trip...
+            </>
+          ) : (
+            'Save Trip Itinerary'
+          )}
         </Button>
       </div>
     </div>

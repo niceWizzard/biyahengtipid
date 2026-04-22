@@ -6,7 +6,9 @@ import {
   deleteTrip,
   getTripById,
   updateTripName as updateTripNameDal,
+  syncTripStops,
 } from '@/dal/trip';
+import { StopData } from '@/app/(main)/trip/[id]/_components/TripStopItem';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -85,6 +87,53 @@ export const deleteTripAction = async (id: string) => {
     return { success: true, message: 'Trip deleted successfully.' };
   } catch (err) {
     console.error(err);
+    return { success: false, message: 'Something went wrong.' };
+  }
+};
+
+export const saveTripStopsAction = async (
+  tripId: string,
+  stops: StopData[]
+) => {
+  try {
+    // 1. Validation: 1 to 25 stops
+    if (stops.length === 0) {
+      return { success: false, message: 'Trip must have at least one stop.' };
+    }
+    if (stops.length > 25) {
+      return { success: false, message: 'Maximum 25 stops allowed.' };
+    }
+
+    // 2. Authentication
+    const session = await requireEmailVerified();
+
+    // 3. Authorization
+    const trip = await getTripById(tripId);
+    if (!trip) {
+      return { success: false, message: 'Trip not found.' };
+    }
+    if (trip.userId !== session.user.id) {
+      return { success: false, message: 'Unauthorized.' };
+    }
+
+    // 4. Sync
+    const updatedStops = await syncTripStops(tripId, stops);
+
+    // 5. Revalidate
+    revalidatePath(`/trip/${tripId}`);
+
+    return {
+      success: true,
+      message: 'Trip itinerary saved successfully.',
+      stops: updatedStops.map((s) => ({
+        id: s.id.toString(),
+        name: s.name,
+        lat: s.latitude,
+        lng: s.longitude,
+      })),
+    };
+  } catch (err) {
+    console.error('Failed to save trip stops:', err);
     return { success: false, message: 'Something went wrong.' };
   }
 };

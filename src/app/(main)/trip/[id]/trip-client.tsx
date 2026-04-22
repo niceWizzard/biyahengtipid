@@ -8,12 +8,13 @@ import { useEffect, useMemo, useReducer, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import TripPanel from './_components/TripPanel';
-import { Spinner } from '@/components/ui/spinner';
 
 import { TripActionType, tripReducer } from './trip-reducer';
 import { toast } from 'sonner';
 import { StopData } from './_components/TripStopItem';
 import { fetchDirections } from '@/lib/mapbox';
+import { useTransition } from 'react';
+import { saveTripStopsAction } from '@/actions/trip';
 
 export default function TripClient({
   trip,
@@ -38,6 +39,24 @@ export default function TripClient({
   const [navigationPath, setNavigationPath] = useState<
     [number, number][] | undefined
   >(undefined);
+  const [isSaving, startTransition] = useTransition();
+
+  const handleSave = () => {
+    startTransition(async () => {
+      try {
+        const res = await saveTripStopsAction(trip.id.toString(), stops);
+        if (res.success && res.stops) {
+          toast.success(res.message);
+          dispatch({ type: TripActionType.SYNC_STOPS, payload: res.stops });
+        } else {
+          toast.error(res.message || 'Failed to save trip');
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        toast.error('An error occurred while saving.');
+      }
+    });
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -92,6 +111,8 @@ export default function TripClient({
         onDelete={handleDelete}
         onRename={handleRename}
         onDragEnd={handleDragEnd}
+        onSave={handleSave}
+        isSaving={isSaving}
         stops={stops}
       />
 

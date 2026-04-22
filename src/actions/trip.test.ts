@@ -1,11 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { updateTripName, createTripAction, deleteTripAction } from './trip';
+import {
+  updateTripName,
+  createTripAction,
+  deleteTripAction,
+  saveTripStopsAction,
+} from './trip';
 import { requireEmailVerified } from '@/dal/emailVerified';
 import {
   getTripById,
   updateTripName as updateTripNameDal,
   createTrip,
   deleteTrip,
+  syncTripStops,
 } from '@/dal/trip';
 import { revalidatePath } from 'next/cache';
 
@@ -166,6 +172,60 @@ describe('trip actions', () => {
       });
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
+    });
+  });
+  describe('saveTripStopsAction', () => {
+    const mockStops = [
+      { id: '1', name: 'Stop 1', lat: 10, lng: 20 },
+      { id: 'uuid-1', name: 'New Stop', lat: 30, lng: 40 },
+    ];
+
+    it('should save trip stops successfully', async () => {
+      vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
+      vi.mocked(getTripById).mockResolvedValue(mockTrip as any);
+      vi.mocked(syncTripStops).mockResolvedValue([
+        {
+          id: 1,
+          name: 'Stop 1',
+          latitude: 10,
+          longitude: 20,
+          visitOrder: 0,
+        },
+        {
+          id: 2,
+          name: 'New Stop',
+          latitude: 30,
+          longitude: 40,
+          visitOrder: 1,
+        },
+      ] as any);
+
+      const result = await saveTripStopsAction('1', mockStops);
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('Trip itinerary saved successfully.');
+      expect(result.stops).toHaveLength(2);
+      expect(result.stops![1].id).toBe('2'); // Resolved numeric ID
+      expect(syncTripStops).toHaveBeenCalledWith('1', mockStops);
+      expect(revalidatePath).toHaveBeenCalledWith('/trip/1');
+    });
+
+    it('should return failure if no stops are provided', async () => {
+      const result = await saveTripStopsAction('1', []);
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Trip must have at least one stop.');
+    });
+
+    it('should return failure if user is not authorized', async () => {
+      vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
+      vi.mocked(getTripById).mockResolvedValue({
+        ...mockTrip,
+        userId: 'other-user',
+      } as any);
+
+      const result = await saveTripStopsAction('1', mockStops);
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Unauthorized.');
     });
   });
 });

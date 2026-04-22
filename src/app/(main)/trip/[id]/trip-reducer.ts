@@ -7,6 +7,7 @@ export enum TripActionType {
   REORDER_STOPS = 'REORDER_STOPS',
   UPDATE_STOP_LOCATION = 'UPDATE_STOP_LOCATION',
   RENAME_STOP = 'RENAME_STOP',
+  SYNC_STOPS = 'SYNC_STOPS',
 }
 
 export type TripAction =
@@ -29,6 +30,10 @@ export type TripAction =
   | {
       type: TripActionType.RENAME_STOP;
       payload: { id: string; name: string };
+    }
+  | {
+      type: TripActionType.SYNC_STOPS;
+      payload: StopData[];
     };
 
 export function tripReducer(state: StopData[], action: TripAction): StopData[] {
@@ -53,6 +58,9 @@ export function tripReducer(state: StopData[], action: TripAction): StopData[] {
         return arrayMove(state, oldIndex, newIndex);
       }
       return state;
+    }
+    case TripActionType.SYNC_STOPS: {
+      return action.payload;
     }
     default:
       return state;

@@ -1,8 +1,8 @@
 /// <reference types="vitest/globals" />
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TripPanel from './TripPanel';
-import { ComponentProps } from 'react';
 import { TripStopItem } from './TripStopItem';
+import { ComponentProps } from 'react';
 
 // Mock dnd-kit using central mocks
 vi.mock('@dnd-kit/core');
@@ -66,6 +66,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -81,6 +83,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -98,6 +102,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -115,6 +121,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -130,6 +138,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -150,6 +160,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -167,6 +179,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 
@@ -184,6 +198,8 @@ describe('TripPanel', () => {
         onDragEnd={mockOnDragEnd}
         onDelete={mockOnDelete}
         onRename={mockOnRename}
+        onSave={vi.fn()}
+        isSaving={false}
       />
     );
 

@@ -115,6 +115,8 @@ vi.mock('sonner', () => ({
   },
 }));
 
+vi.mock('@/actions/trip');
+
 const mockTrip: Trip = {
   id: 1,
   name: 'Test Trip',
