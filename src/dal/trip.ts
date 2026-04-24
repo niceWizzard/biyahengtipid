@@ -98,9 +98,10 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
     .map((s, index) => ({ ...s, visitOrder: index }))
     .filter((s) => isNaN(Number(s.id)));
 
-  // Delete missing stops
+  await db.transaction(async (tx) => {
+    // Delete missing stops
   if (toDelete.length > 0) {
-    await db
+    await tx
       .delete(tripStops)
       .where(
         and(eq(tripStops.tripId, parsedTripId), inArray(tripStops.id, toDelete))
@@ -109,7 +110,7 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
 
   // Update existing stops
   for (const stop of toUpdate) {
-    await db
+    await tx
       .update(tripStops)
       .set({
         name: stop.name,
@@ -123,7 +124,7 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
 
   // Insert new stops
   if (toInsert.length > 0) {
-    await db.insert(tripStops).values(
+    await tx.insert(tripStops).values(
       toInsert.map((stop) => ({
         tripId: parsedTripId,
         name: stop.name,
@@ -133,6 +134,7 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
       }))
     );
   }
+  })
 
   // Return the newly synced stops to update the client IDs
   return await getTripStops(tripId);
