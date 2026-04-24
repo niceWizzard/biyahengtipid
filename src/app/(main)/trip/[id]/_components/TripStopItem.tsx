@@ -33,13 +33,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-
-export interface StopData {
-  id: string;
-  lat: number;
-  lng: number;
-  name: string;
-}
+import { TripStop } from '@/db/types';
 
 const renameSchema = z.object({
   name: z
@@ -50,13 +44,17 @@ const renameSchema = z.object({
 
 type RenameSchema = z.infer<typeof renameSchema>;
 
+export type LocalTripStop = Omit<TripStop, 'id'> & {
+  id: string;
+};
+
 export function TripStopItem({
   stop,
   index,
   onDelete,
   onRename,
 }: {
-  stop: StopData;
+  stop: LocalTripStop;
   index: number;
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
@@ -125,10 +123,10 @@ export function TripStopItem({
             </p>
             <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
               <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-                Lat: {stop.lat.toFixed(4)}
+                Lat: {stop.latitude.toFixed(4)}
               </span>
               <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-                Lng: {stop.lng.toFixed(4)}
+                Lng: {stop.longitude.toFixed(4)}
               </span>
             </div>
           </div>

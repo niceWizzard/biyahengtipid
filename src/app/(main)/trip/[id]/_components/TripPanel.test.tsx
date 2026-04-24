@@ -3,6 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TripPanel from './TripPanel';
 import { TripStopItem } from './TripStopItem';
 import { ComponentProps } from 'react';
+import { createMockLocalTripStop } from '@/__tests__/stopFactory';
+import { createMockTrip } from '@/__tests__/tripFactory';
 
 // Mock dnd-kit using central mocks
 vi.mock('@dnd-kit/core');
@@ -37,17 +39,25 @@ vi.mock('@/actions/trip');
 vi.mock('next/navigation');
 
 describe('TripPanel', () => {
-  const mockTrip = {
-    id: 1,
+  const mockTrip = createMockTrip({
     name: 'Summer Vacation',
-    userId: 'user-1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  });
 
   const mockStops = [
-    { id: '1', name: 'Stop 1', lat: 14.5995, lng: 120.9842 },
-    { id: '2', name: 'Stop 2', lat: 14.6042, lng: 120.9822 },
+    createMockLocalTripStop({
+      id: '1',
+      name: 'Stop 1',
+      latitude: 14.5995,
+      longitude: 120.9842,
+      visitOrder: 0,
+    }),
+    createMockLocalTripStop({
+      id: '2',
+      name: 'Stop 2',
+      latitude: 14.6042,
+      longitude: 120.9822,
+      visitOrder: 1,
+    }),
   ];
 
   const mockOnDragEnd = vi.fn();

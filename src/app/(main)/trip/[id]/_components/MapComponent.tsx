@@ -46,9 +46,13 @@ export default function MapComponent({
   onStopUpdateLocation,
   navigationPath,
 }: {
-  markers: { id: string; lat: number; lng: number }[];
+  markers: { id: string; latitude: number; longitude: number }[];
   onMapClick: (lat: number, lng: number) => void;
-  onStopUpdateLocation: (id: string, lat: number, lng: number) => void;
+  onStopUpdateLocation: (
+    id: string,
+    latitude: number,
+    longitude: number
+  ) => void;
   navigationPath?: ComponentProps<typeof Polyline>['positions'];
 }) {
   return (
@@ -77,7 +81,7 @@ export default function MapComponent({
         return (
           <Marker
             key={marker.id}
-            position={[marker.lat, marker.lng]}
+            position={[marker.latitude, marker.longitude]}
             icon={icon}
             draggable
             eventHandlers={{
@@ -92,16 +96,18 @@ export default function MapComponent({
                 Stop {index + 1}
               </div>
               <div className="text-muted-foreground bg-muted/50 rounded-lg p-2 text-center font-mono text-xs">
-                {marker.lat.toFixed(5)}
+                {marker.latitude.toFixed(5)}
                 <br />
-                {marker.lng.toFixed(5)}
+                {marker.longitude.toFixed(5)}
               </div>
             </Popup>
           </Marker>
         );
       })}
       <Polyline
-        positions={navigationPath || markers.map((m) => [m.lat, m.lng])}
+        positions={
+          navigationPath || markers.map((m) => [m.latitude, m.longitude])
+        }
         color="#3b82f6"
         weight={4}
         opacity={0.7}

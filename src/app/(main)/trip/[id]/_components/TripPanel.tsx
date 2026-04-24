@@ -18,13 +18,13 @@ import { fetchDirections } from '@/lib/mapbox';
 import { Button } from '@/components/ui/button';
 import { Trip } from '@/db/types';
 
-import { StopData, TripStopItem } from './TripStopItem';
+import { LocalTripStop, TripStopItem } from './TripStopItem';
 
 import SettingsDropdown from './SettingsDropDown';
 
 interface Props {
   trip: Trip;
-  stops: StopData[];
+  stops: LocalTripStop[];
   onDragEnd: (params: { activeId: string; overId: string }) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;

@@ -3,7 +3,7 @@ import { requireEmailVerified } from './emailVerified';
 import { db } from '@/db';
 import { trips as tripsTable, tripStops } from '@/db/schema';
 import { eq, inArray, and } from 'drizzle-orm';
-import { StopData } from '@/app/(main)/trip/[id]/_components/TripStopItem';
+import { LocalTripStop } from '@/app/(main)/trip/[id]/_components/TripStopItem';
 
 export const getTripsOfUser = async () => {
   const session = await requireEmailVerified();
@@ -78,7 +78,7 @@ export const getTripStops = async (tripId: string) => {
   });
 };
 
-export const syncTripStops = async (tripId: string, stops: StopData[]) => {
+export const syncTripStops = async (tripId: string, stops: LocalTripStop[]) => {
   const parsedTripId = Number(tripId);
   if (isNaN(parsedTripId)) throw new Error('Invalid trip ID');
 
@@ -114,8 +114,8 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
       .update(tripStops)
       .set({
         name: stop.name,
-        latitude: stop.lat,
-        longitude: stop.lng,
+        latitude: stop.latitude,
+        longitude: stop.longitude,
         visitOrder: stop.visitOrder,
         updatedAt: new Date(),
       })
@@ -128,8 +128,8 @@ export const syncTripStops = async (tripId: string, stops: StopData[]) => {
       toInsert.map((stop) => ({
         tripId: parsedTripId,
         name: stop.name,
-        latitude: stop.lat,
-        longitude: stop.lng,
+        latitude: stop.latitude,
+        longitude: stop.longitude,
         visitOrder: stop.visitOrder,
       }))
     );

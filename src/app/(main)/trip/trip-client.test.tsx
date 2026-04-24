@@ -2,12 +2,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TripClient from './[id]/trip-client';
 import { Trip } from '@/db/types';
-import { StopData } from './[id]/_components/TripStopItem';
+import { LocalTripStop } from './[id]/_components/TripStopItem';
 import { act, ComponentProps } from 'react';
 import MapComponent from './[id]/_components/MapComponent';
 import TripPanel from './[id]/_components/TripPanel';
 import { toast } from 'sonner';
 import { fetchDirections } from '@/lib/mapbox';
+import { createMockTrip } from '@/__tests__/tripFactory';
+import { createMockLocalTripStop } from '@/__tests__/stopFactory';
 
 vi.mock('@/lib/mapbox', () => ({
   fetchDirections: vi.fn().mockResolvedValue({
@@ -73,11 +75,11 @@ vi.mock('./[id]/_components/TripPanel', () => ({
         <h1 data-testid="trip-name">{props.trip.name}</h1>
         <div data-testid="stops-count">{props.stops.length} stops</div>
         <div data-testid="stops-list">
-          {props.stops.map((stop: StopData, index: number) => (
+          {props.stops.map((stop: LocalTripStop, index: number) => (
             <div key={stop.id} data-testid={`stop-item-${index}`}>
               <span data-testid={`stop-id-${index}`}>{stop.id}</span>
-              <span data-testid={`stop-lat-${index}`}>{stop.lat}</span>
-              <span data-testid={`stop-lng-${index}`}>{stop.lng}</span>
+              <span data-testid={`stop-lat-${index}`}>{stop.latitude}</span>
+              <span data-testid={`stop-lng-${index}`}>{stop.longitude}</span>
               <button onClick={() => props.onDelete(stop.id)}>
                 Delete {stop.id}
               </button>
@@ -117,13 +119,11 @@ vi.mock('sonner', () => ({
 
 vi.mock('@/actions/trip');
 
-const mockTrip: Trip = {
+const mockTrip: Trip = createMockTrip({
   id: 1,
   name: 'Test Trip',
   userId: 'user-1',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+});
 
 describe('TripClient', () => {
   beforeEach(() => {
@@ -222,12 +222,15 @@ describe('TripClient', () => {
   });
 
   it('limits the number of stops to 25', async () => {
-    const stops = Array.from({ length: 25 }, (_, i) => ({
-      id: i.toString(),
-      lat: i,
-      lng: i,
-      name: i.toString(),
-    }));
+    const stops = Array.from({ length: 25 }, (_, i) =>
+      createMockLocalTripStop({
+        id: i.toString(),
+        latitude: i,
+        longitude: i,
+        name: i.toString(),
+        visitOrder: i,
+      })
+    );
     render(<TripClient trip={mockTrip} initialStops={stops} />);
 
     expect(screen.getByTestId('stops-count').textContent).toBe('25 stops');

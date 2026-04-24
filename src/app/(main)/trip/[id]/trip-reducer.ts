@@ -1,5 +1,5 @@
 import { arrayMove } from '@dnd-kit/sortable';
-import { StopData } from './_components/TripStopItem';
+import { LocalTripStop } from './_components/TripStopItem';
 
 export enum TripActionType {
   ADD_STOP = 'ADD_STOP',
@@ -13,7 +13,7 @@ export enum TripActionType {
 export type TripAction =
   | {
       type: TripActionType.ADD_STOP;
-      payload: { lat: number; lng: number; id: string; name: string };
+      payload: LocalTripStop;
     }
   | {
       type: TripActionType.DELETE_STOP;
@@ -25,7 +25,7 @@ export type TripAction =
     }
   | {
       type: TripActionType.UPDATE_STOP_LOCATION;
-      payload: { id: string; lat: number; lng: number };
+      payload: { id: string; latitude: number; longitude: number };
     }
   | {
       type: TripActionType.RENAME_STOP;
@@ -33,18 +33,20 @@ export type TripAction =
     }
   | {
       type: TripActionType.SYNC_STOPS;
-      payload: StopData[];
+      payload: LocalTripStop[];
     };
 
-export function tripReducer(state: StopData[], action: TripAction): StopData[] {
+export function tripReducer(state: LocalTripStop[], action: TripAction): LocalTripStop[] {
   switch (action.type) {
     case TripActionType.ADD_STOP:
       return [...state, { ...action.payload }];
     case TripActionType.DELETE_STOP:
       return state.filter((m) => m.id !== action.payload);
     case TripActionType.UPDATE_STOP_LOCATION: {
-      const { id, lat, lng } = action.payload;
-      return state.map((m) => (m.id === id ? { ...m, lat, lng } : m));
+      const { id, latitude, longitude } = action.payload;
+      return state.map((m) =>
+        m.id === id ? { ...m, latitude, longitude } : m
+      );
     }
     case TripActionType.RENAME_STOP: {
       const { id, name } = action.payload;

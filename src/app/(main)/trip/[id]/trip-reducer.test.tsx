@@ -1,11 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import { tripReducer, TripActionType, TripAction } from './trip-reducer';
-import { StopData } from './_components/TripStopItem';
+import { LocalTripStop } from './_components/TripStopItem';
+import { createMockLocalTripStop } from '@/__tests__/stopFactory';
 
 describe('tripReducer', () => {
-  const initialState: StopData[] = [
-    { id: '1', name: 'Stop 1', lat: 10, lng: 10 },
-    { id: '2', name: 'Stop 2', lat: 20, lng: 20 },
+  const initialState: LocalTripStop[] = [
+    createMockLocalTripStop({
+      id: '1',
+      name: 'Stop 1',
+      latitude: 10,
+      longitude: 10,
+      visitOrder: 0,
+    }),
+    createMockLocalTripStop({
+      id: '2',
+      name: 'Stop 2',
+      latitude: 20,
+      longitude: 20,
+      visitOrder: 1,
+    }),
   ];
 
   it('handles RENAME_STOP correctly', () => {
@@ -32,7 +45,13 @@ describe('tripReducer', () => {
   });
 
   it('handles ADD_STOP correctly', () => {
-    const newStop = { id: '3', name: 'Stop 3', lat: 30, lng: 30 };
+    const newStop = createMockLocalTripStop({
+      id: '3',
+      name: 'Stop 3',
+      latitude: 30,
+      longitude: 30,
+      visitOrder: 2,
+    });
     const action = {
       type: TripActionType.ADD_STOP,
       payload: newStop,

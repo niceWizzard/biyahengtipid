@@ -11,7 +11,7 @@ import TripPanel from './_components/TripPanel';
 
 import { TripActionType, tripReducer } from './trip-reducer';
 import { toast } from 'sonner';
-import { StopData } from './_components/TripStopItem';
+import { LocalTripStop } from './_components/TripStopItem';
 import { fetchDirections } from '@/lib/mapbox';
 import { useTransition } from 'react';
 import { saveTripStopsAction } from '@/actions/trip';
@@ -21,7 +21,7 @@ export default function TripClient({
   initialStops,
 }: {
   trip: Trip;
-  initialStops?: StopData[];
+  initialStops?: LocalTripStop[];
 }) {
   const MapComponent = useMemo(
     () =>
@@ -69,7 +69,7 @@ export default function TripClient({
       try {
         toast.loading('Finding path...', { id: 'nav-fetch' });
         const res = await fetchDirections({
-          waypoints: stops.map((s) => [s.lng, s.lat]),
+          waypoints: stops.map((s) => [s.longitude, s.latitude]),
           signal: controller.signal,
         });
         const geom = res.routes[0].geometry.coordinates.map(
@@ -130,16 +130,20 @@ export default function TripClient({
               type: TripActionType.ADD_STOP,
               payload: {
                 id: crypto.randomUUID(),
-                lat,
-                lng,
+                latitude: lat,
+                longitude: lng,
                 name: new Date().toISOString(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                tripId: trip.id,
+                visitOrder: stops.length,
               },
             });
           }}
-          onStopUpdateLocation={(id, lat, lng) => {
+          onStopUpdateLocation={(id, latitude, longitude) => {
             dispatch({
               type: TripActionType.UPDATE_STOP_LOCATION,
-              payload: { id, lat, lng },
+              payload: { id, latitude, longitude },
             });
           }}
         />

@@ -14,6 +14,9 @@ import {
   syncTripStops,
 } from '@/dal/trip';
 import { revalidatePath } from 'next/cache';
+import { LocalTripStop } from '@/app/(main)/trip/[id]/_components/TripStopItem';
+import { createMockTrip } from '@/__tests__/tripFactory';
+import { createMockLocalTripStop, createMockStop } from '@/__tests__/stopFactory';
 
 // Mock dependencies
 vi.mock('@/dal/emailVerified');
@@ -22,7 +25,7 @@ vi.mock('next/cache');
 
 describe('trip actions', () => {
   const mockSession = { user: { id: 'user-1' } };
-  const mockTrip = { id: '1', name: 'Original Name', userId: 'user-1' };
+  const mockTrip = createMockTrip({ id: 1, name: 'Original Name', userId: 'user-1' });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -175,29 +178,41 @@ describe('trip actions', () => {
     });
   });
   describe('saveTripStopsAction', () => {
-    const mockStops = [
-      { id: '1', name: 'Stop 1', lat: 10, lng: 20 },
-      { id: 'uuid-1', name: 'New Stop', lat: 30, lng: 40 },
+    const mockStops: LocalTripStop[] = [
+      createMockLocalTripStop({
+        id: '1',
+        name: 'Stop 1',
+        latitude: 10,
+        longitude: 20,
+        visitOrder: 0,
+      }),
+      createMockLocalTripStop({
+        id: 'uuid-1',
+        name: 'New Stop',
+        latitude: 30,
+        longitude: 40,
+        visitOrder: 1,
+      }),
     ];
 
     it('should save trip stops successfully', async () => {
       vi.mocked(requireEmailVerified).mockResolvedValue(mockSession as any);
       vi.mocked(getTripById).mockResolvedValue(mockTrip as any);
       vi.mocked(syncTripStops).mockResolvedValue([
-        {
+        createMockStop({
           id: 1,
           name: 'Stop 1',
           latitude: 10,
           longitude: 20,
           visitOrder: 0,
-        },
-        {
+        }),
+        createMockStop({
           id: 2,
           name: 'New Stop',
           latitude: 30,
           longitude: 40,
           visitOrder: 1,
-        },
+        }),
       ] as any);
 
       const result = await saveTripStopsAction('1', mockStops);

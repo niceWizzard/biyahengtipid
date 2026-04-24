@@ -8,7 +8,7 @@ import {
   updateTripName as updateTripNameDal,
   syncTripStops,
 } from '@/dal/trip';
-import { StopData } from '@/app/(main)/trip/[id]/_components/TripStopItem';
+import { LocalTripStop } from '@/app/(main)/trip/[id]/_components/TripStopItem';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -93,7 +93,7 @@ export const deleteTripAction = async (id: string) => {
 
 export const saveTripStopsAction = async (
   tripId: string,
-  stops: StopData[]
+  stops: LocalTripStop[]
 ) => {
   try {
     // 1. Validation: 1 to 25 stops
@@ -128,8 +128,12 @@ export const saveTripStopsAction = async (
       stops: updatedStops.map((s) => ({
         id: s.id.toString(),
         name: s.name,
-        lat: s.latitude,
-        lng: s.longitude,
+        latitude: s.latitude,
+        longitude: s.longitude,
+        createdAt: s.createdAt,
+        updatedAt: s.updatedAt,
+        tripId: s.tripId,
+        visitOrder: s.visitOrder,
       })),
     };
   } catch (err) {

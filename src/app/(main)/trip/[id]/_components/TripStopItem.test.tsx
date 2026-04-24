@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { TripStopItem, StopData } from './TripStopItem';
+import { TripStopItem, LocalTripStop } from './TripStopItem';
 import { useSortable } from '@dnd-kit/sortable';
 import { defaultUseSortableReturn } from '../../../../../../__mocks__/@dnd-kit/sortable';
+import { createMockLocalTripStop } from '@/__tests__/stopFactory';
 
 // Mock dnd-kit using central mocks
 vi.mock('@dnd-kit/sortable');
@@ -50,12 +51,13 @@ vi.mock('@/components/ui/alert-dialog', () => ({
 }));
 
 describe('TripStopItem', () => {
-  const mockStop: StopData = {
+  const mockStop: LocalTripStop = createMockLocalTripStop({
     id: 'stop-1',
     name: 'Eiffel Tower',
-    lat: 48.8584,
-    lng: 2.2945,
-  };
+    latitude: 48.8584,
+    longitude: 2.2945,
+    visitOrder: 0,
+  });
 
   const mockOnDelete = vi.fn();
   const mockOnRename = vi.fn();
