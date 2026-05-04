@@ -15,7 +15,7 @@ import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
-import DeleteConfirmDialog from './DeleteConfirmDialog';
+import ConfirmationDialog from '@/components/ConfirmationDialog';
 
 export default function SettingsDropdown({ trip }: { trip: Trip }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -76,11 +76,16 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
         isEditing={isEditing}
         onClose={() => setIsEditing(false)}
       />
-      <DeleteConfirmDialog
+      <ConfirmationDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDelete}
         isPending={isDeleting}
+        title="Delete trip?"
+        description="This action cannot be undone. This will permanently delete your trip and remove your data from our servers."
+        actionButtonText="Confirm Delete"
+        cancelButtonText="Cancel"
+        destructive
       />
     </>
   );

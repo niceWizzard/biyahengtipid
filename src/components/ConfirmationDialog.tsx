@@ -8,41 +8,49 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Spinner } from './ui/spinner';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   isPending: boolean;
+  title?: string;
+  description?: string;
+  actionButtonText?: string;
+  cancelButtonText?: string;
+  destructive?: boolean;
 }
 
-export default function DeleteConfirmDialog({
+export default function ConfirmationDialog({
   isOpen,
   onClose,
   onConfirm,
   isPending,
+  title = 'Are you absolutely sure?',
+  description = 'This action cannot be undone. This will permanently delete your trip and remove your data from our servers.',
+  actionButtonText = 'Delete Trip',
+  cancelButtonText = 'Cancel',
+  destructive = false,
 }: Props) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="w-fit">
+      <AlertDialogContent className="w-fit max-w-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. <br /> This will permanently delete
-            your trip and remove your data from our servers.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending} onClick={onClose}>
-            Cancel
+            {cancelButtonText}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isPending}
-            variant="destructive"
+            variant={destructive ? 'destructive' : 'default'}
             autoFocus
           >
-            {isPending ? 'Deleting...' : 'Delete Trip'}
+            {isPending ? <Spinner /> : actionButtonText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

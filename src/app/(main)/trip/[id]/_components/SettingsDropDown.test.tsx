@@ -10,6 +10,8 @@ import SettingsDropdown from './SettingsDropDown';
 import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import ConfirmationDialog from '@/components/ConfirmationDialog';
+import { ComponentProps } from 'react';
 
 // Mock child component
 vi.mock('./EditTripDialog', () => ({
@@ -19,13 +21,12 @@ vi.mock('./EditTripDialog', () => ({
   ),
 }));
 
-vi.mock('./DeleteConfirmDialog', () => ({
-  __esModule: true,
-  default: vi.fn(({ isOpen, onConfirm, isPending }) =>
-    isOpen ? (
-      <div data-testid="delete-confirm-dialog">
-        <button onClick={onConfirm} disabled={isPending}>
-          {isPending ? 'Deleting...' : 'Confirm Delete'}
+vi.mock('@/components/ConfirmationDialog', () => ({
+  default: vi.fn((props: ComponentProps<typeof ConfirmationDialog>) =>
+    props.isOpen ? (
+      <div data-testid="confirmation-dialog">
+        <button onClick={props.onConfirm} disabled={props.isPending}>
+          {props.isPending ? 'Loading...' : props.actionButtonText}
         </button>
       </div>
     ) : null
@@ -171,21 +172,21 @@ describe('SettingsDropdown', () => {
 
     await waitFor(
       async () => {
-        const dialog = screen.getByTestId('delete-confirm-dialog');
-        expect(within(dialog).getByText('Deleting...')).toBeDefined();
+        const dialog = screen.getByTestId('confirmation-dialog');
+        expect(within(dialog).getByText('Loading...')).toBeDefined();
       },
       { timeout: 2000 }
     );
 
-    const dialog = screen.getByTestId('delete-confirm-dialog');
-    const confirmBtn = within(dialog).getByText('Deleting...');
+    const dialog = screen.getByTestId('confirmation-dialog');
+    const confirmBtn = within(dialog).getByText('Loading...');
     expect(confirmBtn.hasAttribute('disabled')).toBe(true);
 
     // Resolve the promise
     resolveDelete!({ success: true });
 
     await waitFor(() => {
-      expect(screen.queryByText('Deleting...')).toBeNull();
+      expect(screen.queryByText('Loading...')).toBeNull();
     });
   });
 });
