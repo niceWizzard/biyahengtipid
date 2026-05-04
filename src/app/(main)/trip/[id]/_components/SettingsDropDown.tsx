@@ -11,15 +11,23 @@ import { Settings } from 'lucide-react';
 import { useState } from 'react';
 import EditTripDialog from './EditTripDialog';
 import { Trip } from '@/db/types';
-import { deleteTripAction } from '@/actions/trip';
+import { deleteTripStopsAction, deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 
-export default function SettingsDropdown({ trip }: { trip: Trip }) {
+export default function SettingsDropdown({
+  trip,
+  onClearStops,
+}: {
+  trip: Trip;
+  onClearStops: () => void;
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isClearStopsDialogOpen, setIsClearStopsDialogOpen] = useState(false);
+  const [isClearingStops, setIsClearingStops] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
@@ -39,6 +47,28 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
       setIsDeleting(false);
     }
   };
+
+  const handleClearStops = async () => {
+    setIsClearingStops(true);
+    try {
+      const res = await deleteTripStopsAction(trip.id.toString());
+      if (res.success) {
+        toast.success(res.message);
+        onClearStops();
+      } else {
+        toast.error(
+          res.message || 'Something went wrong while clearing stops.'
+        );
+      }
+    } catch (err) {
+      console.error('Error clearing stops:', err);
+      toast.error('Something went wrong while clearing stops.');
+    } finally {
+      setIsClearingStops(false);
+      setIsClearStopsDialogOpen(false);
+    }
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -57,6 +87,14 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
               onClick={() => setIsEditing(true)}
             >
               Edit Trip
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              variant="destructive"
+              closeOnClick={false}
+              onClick={() => setIsClearStopsDialogOpen(true)}
+            >
+              Clear Stops
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
@@ -84,6 +122,18 @@ export default function SettingsDropdown({ trip }: { trip: Trip }) {
         title="Delete trip?"
         description="This action cannot be undone. This will permanently delete your trip and remove your data from our servers."
         actionButtonText="Confirm Delete"
+        cancelButtonText="Cancel"
+        destructive
+      />
+
+      <ConfirmationDialog
+        isOpen={isClearStopsDialogOpen}
+        onClose={() => setIsClearStopsDialogOpen(false)}
+        onConfirm={handleClearStops}
+        isPending={isClearingStops}
+        title="Clear all stops?"
+        description="This action cannot be undone. This will permanently delete all stops and remove your data from our servers."
+        actionButtonText="Clear Stops"
         cancelButtonText="Cancel"
         destructive
       />

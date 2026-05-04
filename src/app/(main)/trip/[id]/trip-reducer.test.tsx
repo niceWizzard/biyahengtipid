@@ -72,4 +72,12 @@ describe('tripReducer', () => {
     expect(newState[0].id).toBe('2');
     expect(newState[1].id).toBe('1');
   });
+
+  it('handles CLEAR_STOPS correctly', () => {
+    const action = {
+      type: TripActionType.CLEAR_STOPS,
+    } satisfies TripAction;
+    const newState = tripReducer(initialState, action);
+    expect(newState).toHaveLength(0);
+  });
 });

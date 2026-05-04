@@ -8,6 +8,7 @@ export enum TripActionType {
   UPDATE_STOP_LOCATION = 'UPDATE_STOP_LOCATION',
   RENAME_STOP = 'RENAME_STOP',
   SYNC_STOPS = 'SYNC_STOPS',
+  CLEAR_STOPS = 'CLEAR_STOPS',
 }
 
 export type TripAction =
@@ -34,6 +35,9 @@ export type TripAction =
   | {
       type: TripActionType.SYNC_STOPS;
       payload: LocalTripStop[];
+    }
+  | {
+      type: TripActionType.CLEAR_STOPS;
     };
 
 export function tripReducer(state: LocalTripStop[], action: TripAction): LocalTripStop[] {
@@ -63,6 +67,9 @@ export function tripReducer(state: LocalTripStop[], action: TripAction): LocalTr
     }
     case TripActionType.SYNC_STOPS: {
       return action.payload;
+    }
+    case TripActionType.CLEAR_STOPS: {
+      return [];
     }
     default:
       return state;

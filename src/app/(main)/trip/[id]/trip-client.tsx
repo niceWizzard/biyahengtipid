@@ -103,6 +103,10 @@ export default function TripClient({
     dispatch({ type: TripActionType.RENAME_STOP, payload: { id, name } });
   };
 
+  const handleClearStops = () => {
+    dispatch({ type: TripActionType.CLEAR_STOPS });
+  };
+
   return (
     <div className="bg-background relative flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
       {/* Sidebar / List Panel */}
@@ -114,6 +118,7 @@ export default function TripClient({
         onSave={handleSave}
         isSaving={isSaving}
         stops={stops}
+        onClearStops={handleClearStops}
       />
 
       {/* Map Panel */}

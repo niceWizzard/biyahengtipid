@@ -7,6 +7,7 @@ import {
   getTripById,
   updateTripName as updateTripNameDal,
   syncTripStops,
+  deleteTripStops,
 } from '@/dal/trip';
 import { LocalTripStop } from '@/app/(main)/trip/[id]/_components/TripStopItem';
 import { revalidatePath } from 'next/cache';
@@ -138,6 +139,25 @@ export const saveTripStopsAction = async (
     };
   } catch (err) {
     console.error('Failed to save trip stops:', err);
+    return { success: false, message: 'Something went wrong.' };
+  }
+};
+
+export const deleteTripStopsAction = async (tripId: string) => {
+  try {
+    const session = await requireEmailVerified();
+    const trip = await getTripById(tripId);
+    if (!trip) {
+      return { success: false, message: 'Trip not found.' };
+    }
+    if (trip.userId !== session.user.id) {
+      return { success: false, message: 'Unauthorized.' };
+    }
+    await deleteTripStops(tripId);
+    revalidatePath(`/trip/${tripId}`);
+    return { success: true, message: 'Stops deleted successfully.' };
+  } catch (err) {
+    console.error('Failed to delete stops:', err);
     return { success: false, message: 'Something went wrong.' };
   }
 };

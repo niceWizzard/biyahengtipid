@@ -139,3 +139,10 @@ export const syncTripStops = async (tripId: string, stops: LocalTripStop[]) => {
   // Return the newly synced stops to update the client IDs
   return await getTripStops(tripId);
 };
+
+export const deleteTripStops = async (tripId: string) => {
+  const parsedId = Number(tripId);
+  if (isNaN(parsedId)) throw new Error('Invalid trip ID');
+
+  await db.delete(tripStops).where(eq(tripStops.tripId, parsedId));
+};

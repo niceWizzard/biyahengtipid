@@ -30,6 +30,7 @@ interface Props {
   onRename: (id: string, name: string) => void;
   onSave: () => void;
   isSaving: boolean;
+  onClearStops: () => void;
 }
 
 export default function TripPanel({
@@ -40,6 +41,7 @@ export default function TripPanel({
   onRename,
   onSave,
   isSaving,
+  onClearStops,
 }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -77,7 +79,7 @@ export default function TripPanel({
               reorder
             </p>
           </div>
-          <SettingsDropdown trip={trip} />
+          <SettingsDropdown trip={trip} onClearStops={onClearStops} />
         </div>
       </div>
 

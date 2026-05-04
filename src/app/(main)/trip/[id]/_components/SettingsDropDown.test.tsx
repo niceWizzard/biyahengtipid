@@ -10,8 +10,8 @@ import SettingsDropdown from './SettingsDropDown';
 import { deleteTripAction } from '@/actions/trip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import ConfirmationDialog from '@/components/ConfirmationDialog';
 import { ComponentProps } from 'react';
+import ConfirmationDialog from '@/components/ConfirmationDialog';
 
 // Mock child component
 vi.mock('./EditTripDialog', () => ({
@@ -79,6 +79,16 @@ describe('SettingsDropdown', () => {
     expect(await screen.findByText('Trip Actions')).toBeDefined();
     expect(screen.getByText('Edit Trip')).toBeDefined();
     expect(screen.getByText('Delete Trip')).toBeDefined();
+    expect(screen.getByText('Clear Stops')).toBeDefined();
+  });
+
+  test('opens clear stops dialog when Clear Stops is clicked', async () => {
+    render(<SettingsDropdown trip={mockTrip} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /settings/i }));
+    fireEvent.click(await screen.findByText('Clear Stops'));
+
+    expect(screen.getByTestId('confirmation-dialog')).toBeDefined();
   });
 
   test('opens edit dialog when Edit Trip is clicked', async () => {
