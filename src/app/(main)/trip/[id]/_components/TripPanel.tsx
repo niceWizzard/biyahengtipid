@@ -29,8 +29,11 @@ interface Props {
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
   onSave: () => void;
+  onOptimize: () => void;
   isSaving: boolean;
+  isOptimizing: boolean;
   onClearStops: () => void;
+  distance: number;
 }
 
 export default function TripPanel({
@@ -41,7 +44,10 @@ export default function TripPanel({
   onRename,
   onSave,
   isSaving,
+  isOptimizing,
   onClearStops,
+  onOptimize,
+  distance,
 }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -80,6 +86,9 @@ export default function TripPanel({
             </p>
           </div>
           <SettingsDropdown trip={trip} onClearStops={onClearStops} />
+        </div>
+        <div>
+          <p>Distance: {distance}</p>
         </div>
       </div>
 
@@ -148,6 +157,22 @@ export default function TripPanel({
             </>
           ) : (
             'Save Trip Itinerary'
+          )}
+        </Button>
+        {/* Button for optimize */}
+        <Button
+          size="lg"
+          className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
+          disabled={stops.length === 0 || isSaving}
+          onClick={onOptimize}
+        >
+          {isSaving ? (
+            <>
+              <Spinner className="mr-2 h-4 w-4" />
+              Optimizing Trip...
+            </>
+          ) : (
+            'Optimize Trip Itinerary'
           )}
         </Button>
       </div>

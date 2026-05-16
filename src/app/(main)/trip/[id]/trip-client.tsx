@@ -15,6 +15,7 @@ import { LocalTripStop } from './_components/TripStopItem';
 import { fetchDirections } from '@/lib/mapbox';
 import { useTransition } from 'react';
 import { saveTripStopsAction } from '@/actions/trip';
+import { optimizeTripStopsAction } from '@/actions/optimize';
 
 export default function TripClient({
   trip,
@@ -39,7 +40,9 @@ export default function TripClient({
   const [navigationPath, setNavigationPath] = useState<
     [number, number][] | undefined
   >(undefined);
+  const [navigationDistance, setNavigationDistance] = useState(-1);
   const [isSaving, startTransition] = useTransition();
+  const [isOptimizing, startOptimizing] = useTransition();
 
   const handleSave = () => {
     startTransition(async () => {
@@ -76,6 +79,7 @@ export default function TripClient({
           (c) => [c[1], c[0]] as [number, number]
         );
         setNavigationPath(geom);
+        setNavigationDistance(res.routes[0].distance);
       } catch (error: any) {
         if (error.name === 'AbortError') return;
         console.error('Failed to fetch navigation path:', error);
@@ -107,6 +111,22 @@ export default function TripClient({
     dispatch({ type: TripActionType.CLEAR_STOPS });
   };
 
+  const handleOptimize = async () => {
+    try {
+      const optimizedStops = await optimizeTripStopsAction(stops);
+
+      if (optimizedStops.success && optimizedStops.stops) {
+        dispatch({
+          type: TripActionType.SYNC_STOPS,
+          payload: optimizedStops.stops,
+        });
+        toast.success('Trip optimized successfully');
+      }
+    } catch (error) {
+      toast.error('An error occurred while optimizing.');
+    }
+  };
+
   return (
     <div className="bg-background relative flex h-[calc(100vh-4rem)] w-full flex-col overflow-hidden lg:flex-row">
       {/* Sidebar / List Panel */}
@@ -119,6 +139,9 @@ export default function TripClient({
         isSaving={isSaving}
         stops={stops}
         onClearStops={handleClearStops}
+        onOptimize={handleOptimize}
+        isOptimizing={isOptimizing}
+        distance={navigationDistance}
       />
 
       {/* Map Panel */}
