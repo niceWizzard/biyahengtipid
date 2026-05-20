@@ -14,7 +14,7 @@ describe('DashboardClient', () => {
   it('shows empty message when no trips', () => {
     render(<DashboardClient trips={[]} />);
 
-    expect(screen.getByText(/no trips yet/i)).toBeDefined();
+    expect(screen.getByText(/No trips planned yet/i)).toBeDefined();
   });
 
   it('shows trips when there are trips', async () => {
