@@ -7,8 +7,9 @@ import {
   Popup,
   TileLayer,
   useMapEvents,
+  useMap,
 } from 'react-leaflet';
-import { ComponentProps } from 'react';
+import { ComponentProps, useEffect } from 'react';
 
 const getNumberedIcon = (index: number) => {
   if (typeof window === 'undefined') return undefined;
@@ -45,6 +46,7 @@ export default function MapComponent({
   onMapClick,
   onStopUpdateLocation,
   navigationPath,
+  center,
 }: {
   markers: { id: string; latitude: number; longitude: number }[];
   onMapClick: (lat: number, lng: number) => void;
@@ -54,23 +56,25 @@ export default function MapComponent({
     longitude: number
   ) => void;
   navigationPath?: ComponentProps<typeof Polyline>['positions'];
+  center?: [number, number];
 }) {
   return (
     <MapContainer
-      center={[14.891982723748349, 120.71111480976788]}
+      center={center || [14.891982723748349, 120.71111480976788]}
       maxBounds={[
         [18.62973890304954, 116.71062250139934],
         [5.5804291216756186, 129.71115579661682],
       ]}
       minZoom={8}
       zoom={13}
-      style={{ height: '100%', width: '100%' }}
+      style={{ height: '100%', width: '100%', position: 'initial' }}
       className="h-full w-full outline-none"
     >
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
+      <MapCenterUpdater center={center} />
       <MapClickHandler
         onClick={(lat, lng) => {
           onMapClick(lat, lng);
@@ -115,6 +119,16 @@ export default function MapComponent({
       />
     </MapContainer>
   );
+}
+
+function MapCenterUpdater({ center }: { center?: [number, number] }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center) {
+      map.flyTo(center, 15, { animate: true, duration: 1.5 });
+    }
+  }, [center, map]);
+  return null;
 }
 
 function MapClickHandler({

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useReducer, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import TripPanel from './_components/TripPanel';
+import MapSearchBar from './_components/MapSearchBar';
 
 import { TripActionType, tripReducer } from './trip-reducer';
 import { toast } from 'sonner';
@@ -43,6 +44,7 @@ export default function TripClient({
   const [navigationDistance, setNavigationDistance] = useState(-1);
   const [isSaving, startTransition] = useTransition();
   const [isOptimizing, startOptimizing] = useTransition();
+  const [mapCenter, setMapCenter] = useState<[number, number] | undefined>(undefined);
 
   const handleSave = () => {
     startTransition(async () => {
@@ -111,7 +113,10 @@ export default function TripClient({
     dispatch({ type: TripActionType.CLEAR_STOPS });
   };
 
-  const handleOptimize = (options: { lockStart: boolean; lockEnd: boolean }) => {
+  const handleOptimize = (options: {
+    lockStart: boolean;
+    lockEnd: boolean;
+  }) => {
     startOptimizing(async () => {
       try {
         const optimizedStops = await optimizeTripStopsAction(stops, options);
@@ -148,7 +153,38 @@ export default function TripClient({
 
       {/* Map Panel */}
       <div className="bg-muted/20 relative z-0 h-1/2 flex-1 lg:h-full">
+        <MapSearchBar
+          onSelect={(place) => {
+            const isDuplicate = stops.some(
+              (s) => s.latitude === place.latitude && s.longitude === place.longitude
+            );
+            if (isDuplicate) {
+              toast.error('This stop has already been added');
+              setMapCenter([place.latitude, place.longitude]);
+              return;
+            }
+            if (stops.length >= 25) {
+              toast.error('Maximum number of stops reached (25)');
+              return;
+            }
+            setMapCenter([place.latitude, place.longitude]);
+            dispatch({
+              type: TripActionType.ADD_STOP,
+              payload: {
+                id: crypto.randomUUID(),
+                latitude: place.latitude,
+                longitude: place.longitude,
+                name: place.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                tripId: trip.id,
+                visitOrder: stops.length,
+              },
+            });
+          }}
+        />
         <MapComponent
+          center={mapCenter}
           navigationPath={navigationPath}
           markers={stops}
           onMapClick={(lat, lng) => {
@@ -177,6 +213,7 @@ export default function TripClient({
             });
           }}
         />
+
       </div>
     </div>
   );
