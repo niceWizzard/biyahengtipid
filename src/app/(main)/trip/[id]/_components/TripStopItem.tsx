@@ -4,6 +4,7 @@ import { GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,73 +94,84 @@ export function TripStopItem({
 
   return (
     <>
-      <Card
-        ref={setNodeRef}
-        style={style}
-        data-testid={`stop-card-${stop.id}`}
-        className={`group relative overflow-hidden transition-colors ${
-          isDragging
-            ? 'ring-primary scale-[1.02] opacity-90 shadow-2xl ring-2'
-            : 'hover:border-primary/40 shadow-sm'
-        }`}
-      >
-        <div className="bg-card flex flex-row items-center gap-3 p-3">
-          <div
-            {...attributes}
-            {...listeners}
-            data-testid="drag-handle"
-            className="text-muted-foreground hover:text-foreground cursor-grab p-1 transition-colors active:cursor-grabbing"
+      <div ref={setNodeRef} style={style}>
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{
+            layout: { type: 'spring', stiffness: 300, damping: 30 },
+            opacity: { duration: 0.2 },
+          }}
+        >
+          <Card
+            data-testid={`stop-card-${stop.id}`}
+            className={`group relative overflow-hidden transition-colors ${
+              isDragging
+                ? 'ring-primary scale-[1.02] opacity-90 shadow-2xl ring-2'
+                : 'hover:border-primary/40 shadow-sm'
+            }`}
           >
-            <GripVertical size={20} />
-          </div>
-
-          <div className="bg-primary text-primary-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold shadow-sm">
-            {index + 1}
-          </div>
-
-          <div className="flex min-w-0 flex-1 flex-col">
-            <p className="text-foreground mb-1 truncate text-sm leading-none font-semibold">
-              {stop.name}
-            </p>
-            <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
-              <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-                Lat: {stop.latitude.toFixed(4)}
-              </span>
-              <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
-                Lng: {stop.longitude.toFixed(4)}
-              </span>
-            </div>
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  data-testid="dropdown-trigger"
-                  size="icon"
-                  variant="ghost"
-                  className="text-muted-foreground hover:text-foreground shrink-0 transition-opacity group-hover:opacity-100 focus:opacity-100 md:opacity-0 md:group-focus-within:opacity-100"
-                >
-                  <MoreVertical size={18} />
-                </Button>
-              }
-            ></DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={() => setIsRenameOpen(true)}>
-                <Pencil className="mr-2 h-4 w-4" />
-                Rename
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => setIsDeleteOpen(true)}
+            <div className="bg-card flex flex-row items-center gap-3 p-3">
+              <div
+                {...attributes}
+                {...listeners}
+                data-testid="drag-handle"
+                className="text-muted-foreground hover:text-foreground cursor-grab p-1 transition-colors active:cursor-grabbing"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </Card>
+                <GripVertical size={20} />
+              </div>
+
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold shadow-sm">
+                {index + 1}
+              </div>
+
+              <div className="flex min-w-0 flex-1 flex-col">
+                <p className="text-foreground mb-1 truncate text-sm leading-none font-semibold">
+                  {stop.name}
+                </p>
+                <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
+                  <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
+                    Lat: {stop.latitude.toFixed(4)}
+                  </span>
+                  <span className="bg-muted truncate rounded-sm px-1.5 py-0.5">
+                    Lng: {stop.longitude.toFixed(4)}
+                  </span>
+                </div>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      data-testid="dropdown-trigger"
+                      size="icon"
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-foreground shrink-0 transition-opacity group-hover:opacity-100 focus:opacity-100 md:opacity-0 md:group-focus-within:opacity-100"
+                    >
+                      <MoreVertical size={18} />
+                    </Button>
+                  }
+                ></DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => setIsRenameOpen(true)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setIsDeleteOpen(true)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </Card>
+        </motion.div>
+      </div>
 
       <Dialog open={isRenameOpen} onOpenChange={setIsRenameOpen}>
         <DialogContent>

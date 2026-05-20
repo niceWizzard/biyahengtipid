@@ -24,6 +24,7 @@ import { Trip } from '@/db/types';
 import { LocalTripStop, TripStopItem } from './TripStopItem';
 
 import SettingsDropdown from './SettingsDropDown';
+import { AnimatePresence } from 'framer-motion';
 
 interface Props {
   trip: Trip;
@@ -133,15 +134,17 @@ export default function TripPanel({
               strategy={verticalListSortingStrategy}
             >
               <div className="flex flex-col gap-3">
-                {stops.map((marker, index) => (
-                  <TripStopItem
-                    key={marker.id}
-                    stop={marker}
-                    index={index}
-                    onDelete={onDelete}
-                    onRename={onRename}
-                  />
-                ))}
+                <AnimatePresence>
+                  {stops.map((marker, index) => (
+                    <TripStopItem
+                      key={marker.id}
+                      stop={marker}
+                      index={index}
+                      onDelete={onDelete}
+                      onRename={onRename}
+                    />
+                  ))}
+                </AnimatePresence>
               </div>
             </SortableContext>
           </DndContext>
