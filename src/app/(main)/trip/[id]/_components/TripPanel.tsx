@@ -79,23 +79,34 @@ export default function TripPanel({
     <div className="bg-card/50 relative z-10 flex h-1/2 w-full flex-col border-r shadow-2xl backdrop-blur-3xl lg:h-full lg:w-[420px] xl:w-[480px]">
       {/* Header Section */}
       <div className="bg-background/80 sticky top-0 z-20 flex flex-col border-b p-6 backdrop-blur-md">
-        <div className="mb-1 flex items-center gap-3">
-          <div className="bg-primary/10 rounded-2xl p-2.5">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 rounded-2xl p-2.5 shrink-0">
             <Route className="text-primary size-6" />
           </div>
-          <div className="flex-1">
-            <h2 className="from-foreground to-foreground/70 bg-linear-to-r bg-clip-text text-2xl font-extrabold tracking-tight wrap-break-word text-transparent">
+          <div className="flex-1 min-w-0">
+            <h2 className="from-foreground to-foreground/70 bg-linear-to-r bg-clip-text text-2xl font-extrabold tracking-tight truncate text-transparent">
               {trip.name}
             </h2>
-            <p className="text-muted-foreground text-sm font-medium">
-              {stops.length} {stops.length === 1 ? 'stop' : 'stops'} • Drag to
-              reorder
-            </p>
+            <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-1.5 text-sm font-medium">
+              <span>
+                {stops.length} {stops.length === 1 ? 'stop' : 'stops'}
+              </span>
+              <span className="text-muted-foreground/40">•</span>
+              <span>Drag to reorder</span>
+              {distance > 0 && (
+                <>
+                  <span className="text-muted-foreground/40">•</span>
+                  <div className="flex items-center gap-1 font-semibold text-primary/80">
+                    <MapIcon className="h-3.5 w-3.5" />
+                    <span>{(distance / 1000).toFixed(1)} km</span>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-          <SettingsDropdown trip={trip} onClearStops={onClearStops} />
-        </div>
-        <div>
-          <p>Distance: {distance}</p>
+          <div className="shrink-0">
+            <SettingsDropdown trip={trip} onClearStops={onClearStops} />
+          </div>
         </div>
       </div>
 
