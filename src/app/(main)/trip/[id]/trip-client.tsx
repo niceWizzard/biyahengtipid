@@ -111,20 +111,22 @@ export default function TripClient({
     dispatch({ type: TripActionType.CLEAR_STOPS });
   };
 
-  const handleOptimize = async () => {
-    try {
-      const optimizedStops = await optimizeTripStopsAction(stops);
+  const handleOptimize = (options: { lockStart: boolean; lockEnd: boolean }) => {
+    startOptimizing(async () => {
+      try {
+        const optimizedStops = await optimizeTripStopsAction(stops, options);
 
-      if (optimizedStops.success && optimizedStops.stops) {
-        dispatch({
-          type: TripActionType.SYNC_STOPS,
-          payload: optimizedStops.stops,
-        });
-        toast.success('Trip optimized successfully');
+        if (optimizedStops.success && optimizedStops.stops) {
+          dispatch({
+            type: TripActionType.SYNC_STOPS,
+            payload: optimizedStops.stops,
+          });
+          toast.success('Trip optimized successfully');
+        }
+      } catch (error) {
+        toast.error('An error occurred while optimizing.');
       }
-    } catch (error) {
-      toast.error('An error occurred while optimizing.');
-    }
+    });
   };
 
   return (

@@ -78,6 +78,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -95,6 +99,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -114,6 +122,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -133,6 +145,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -150,6 +166,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -172,6 +192,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -191,6 +215,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 
@@ -210,6 +238,10 @@ describe('TripPanel', () => {
         onRename={mockOnRename}
         onSave={vi.fn()}
         isSaving={false}
+        onOptimize={vi.fn()}
+        isOptimizing={false}
+        onClearStops={vi.fn()}
+        distance={0}
       />
     );
 

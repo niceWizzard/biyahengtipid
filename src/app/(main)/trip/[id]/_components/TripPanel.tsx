@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { MapIcon, Route } from 'lucide-react';
 import {
   KeyboardSensor,
@@ -29,7 +32,7 @@ interface Props {
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
   onSave: () => void;
-  onOptimize: () => void;
+  onOptimize: (options: { lockStart: boolean; lockEnd: boolean }) => void;
   isSaving: boolean;
   isOptimizing: boolean;
   onClearStops: () => void;
@@ -59,6 +62,9 @@ export default function TripPanel({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const [lockStart, setLockStart] = useState(true);
+  const [lockEnd, setLockEnd] = useState(true);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -143,38 +149,72 @@ export default function TripPanel({
       </div>
 
       {/* Footer Section */}
-      <div className="bg-background/80 sticky bottom-0 z-20 border-t p-5 backdrop-blur-md">
-        <Button
-          size="lg"
-          className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
-          disabled={stops.length === 0 || isSaving}
-          onClick={onSave}
-        >
-          {isSaving ? (
-            <>
-              <Spinner className="mr-2 h-4 w-4" />
-              Saving Trip...
-            </>
-          ) : (
-            'Save Trip Itinerary'
-          )}
-        </Button>
-        {/* Button for optimize */}
-        <Button
-          size="lg"
-          className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
-          disabled={stops.length === 0 || isSaving}
-          onClick={onOptimize}
-        >
-          {isSaving ? (
-            <>
-              <Spinner className="mr-2 h-4 w-4" />
-              Optimizing Trip...
-            </>
-          ) : (
-            'Optimize Trip Itinerary'
-          )}
-        </Button>
+      <div className="bg-background/80 sticky bottom-0 z-20 border-t p-5 backdrop-blur-md space-y-4">
+        <div className="flex flex-col gap-3 rounded-xl border bg-card p-3 shadow-sm">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Optimization Settings</p>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="lock-start" 
+                checked={lockStart}
+                onCheckedChange={(checked) => {
+                  if (!checked && !lockEnd) return;
+                  setLockStart(checked as boolean);
+                }}
+              />
+              <Label htmlFor="lock-start" className="cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Lock Start
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="lock-end" 
+                checked={lockEnd}
+                onCheckedChange={(checked) => {
+                  if (!checked && !lockStart) return;
+                  setLockEnd(checked as boolean);
+                }}
+              />
+              <Label htmlFor="lock-end" className="cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Lock End
+              </Label>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Button
+            size="lg"
+            className="shadow-primary/20 w-full rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]"
+            disabled={stops.length <= 2 || isOptimizing || isSaving}
+            onClick={() => onOptimize({ lockStart, lockEnd })}
+          >
+            {isOptimizing ? (
+              <>
+                <Spinner className="mr-2 h-4 w-4" />
+                Optimizing Trip...
+              </>
+            ) : (
+              'Optimize Trip Itinerary'
+            )}
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="w-full rounded-xl font-bold transition-all active:scale-[0.98]"
+            disabled={stops.length === 0 || isSaving}
+            onClick={onSave}
+          >
+            {isSaving ? (
+              <>
+                <Spinner className="mr-2 h-4 w-4" />
+                Saving Trip...
+              </>
+            ) : (
+              'Save Trip Itinerary'
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

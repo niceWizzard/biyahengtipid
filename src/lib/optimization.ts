@@ -10,8 +10,8 @@ export interface VroomJob {
 
 async function vroomOptimize(
     jobs: VroomJob[],
-    startLoc: [number, number],
-    endLoc: [number, number],
+    startLoc?: [number, number],
+    endLoc?: [number, number],
     profile: string = 'driving-car',
 ): Promise<{
     steps: {
@@ -27,16 +27,16 @@ async function vroomOptimize(
     if(!jobs) {
         throw new Error('Jobs is not defined');
     }
+    const vehicle: any = {
+        id: 1,
+        profile,
+    };
+    if (startLoc) vehicle.start = startLoc;
+    if (endLoc) vehicle.end = endLoc;
+
     const requestBody = {
         jobs,
-        vehicles: [
-            {
-                id: 1,
-                profile,
-                start: startLoc,
-                end: endLoc,
-            }
-        ]
+        vehicles: [vehicle]
     };
 
     const response = await fetch(OPTIMIZATION_URL, {
@@ -64,7 +64,8 @@ async function vroomOptimize(
     }
 
     const route = resJson.routes[0];
-    const steps = route.steps.slice(1,-1).map((step: any) => ({
+    const jobSteps = route.steps.filter((step: any) => step.type === 'job');
+    const steps = jobSteps.map((step: any) => ({
         id: step.id.toString(),
         latitude: step.location[1],
         longitude: step.location[0],
@@ -80,14 +81,32 @@ async function vroomOptimize(
 export async function optimizeTripStops(
     stops: LocalTripStop[],
     profile: string = 'driving-car',
+    options: { lockStart?: boolean; lockEnd?: boolean } = { lockStart: true, lockEnd: true }
 ) {
     if(stops.length <= 2) {
         return stops;
     }
 
-    const startStop = stops[0];
-    const endStop = stops[stops.length - 1];
-    const middleStops = stops.slice(1, -1);
+    const { lockStart = true, lockEnd = true } = options;
+    if (!lockStart && !lockEnd) {
+        throw new Error("At least one of lockStart or lockEnd must be true");
+    }
+
+    let startStop: LocalTripStop | undefined;
+    let endStop: LocalTripStop | undefined;
+    let middleStops: LocalTripStop[] = [];
+
+    if (lockStart && lockEnd) {
+        startStop = stops[0];
+        endStop = stops[stops.length - 1];
+        middleStops = stops.slice(1, -1);
+    } else if (lockStart && !lockEnd) {
+        startStop = stops[0];
+        middleStops = stops.slice(1);
+    } else if (!lockStart && lockEnd) {
+        endStop = stops[stops.length - 1];
+        middleStops = stops.slice(0, -1);
+    }
 
     const idMap = new Map<string, string>();
     const jobs = middleStops.map((stop, index) => {
@@ -100,8 +119,8 @@ export async function optimizeTripStops(
 
     const optimizedResult = await vroomOptimize(
         jobs,
-        [startStop.longitude, startStop.latitude],
-        [endStop.longitude, endStop.latitude],
+        startStop ? [startStop.longitude, startStop.latitude] : undefined,
+        endStop ? [endStop.longitude, endStop.latitude] : undefined,
         profile
     );
 
@@ -118,5 +137,10 @@ export async function optimizeTripStops(
         throw new Error(`No job id found on the step with id: ${step.id}`)
     });
     
-    return [startStop, ...optimizedMiddleStops, endStop];
+    const result = [];
+    if (lockStart && startStop) result.push(startStop);
+    result.push(...optimizedMiddleStops);
+    if (lockEnd && endStop) result.push(endStop);
+
+    return result;
 }
