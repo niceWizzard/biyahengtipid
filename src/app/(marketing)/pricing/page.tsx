@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Metadata } from 'next';
+import DevelopmentAlert from './_components/DevelopmentAlert';
 
 export const metadata: Metadata = {
   title: 'Pricing Plans | BiyahengTipid',
@@ -48,7 +49,9 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <div className="bg-background relative flex min-h-[calc(100vh-4rem)] flex-col items-center overflow-hidden py-24">
+    <>
+      <DevelopmentAlert />
+      <div className="bg-background relative flex min-h-[calc(100vh-4rem)] flex-col items-center overflow-hidden py-24">
       {/* Background Effects */}
       <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_2px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]"></div>
       <div className="bg-background absolute inset-0 mask-[radial-gradient(ellipse_at_top,transparent_20%,black_80%)]"></div>
@@ -207,5 +210,6 @@ export default function PricingPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }
