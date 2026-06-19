@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ResetPasswordClient from './reset-password-client';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Reset Password - BiyahengTipid',
@@ -11,5 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ResetPasswordPage() {
-  return <ResetPasswordClient />;
+  return <Suspense fallback={<div className="p-4">Loading...</div>}>
+    <ResetPasswordClient />
+  </Suspense>;
 }
