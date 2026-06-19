@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google';
 import '@/app/globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import DevelopmentBadge from '@/components/DevelopmentBadge';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const poppins = Poppins({
   variable: '--font-poppins',
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <DevelopmentBadge />
-        {children}
+         <TooltipProvider>
+          {children}
+         </TooltipProvider>
         <Toaster position="top-center" />
       </body>
     </html>
