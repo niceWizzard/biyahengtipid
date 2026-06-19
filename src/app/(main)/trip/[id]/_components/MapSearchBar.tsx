@@ -165,8 +165,8 @@ export default function MapSearchBar({
   return (
     <div
       ref={wrapperRef}
-      className="absolute top-0 py-8 left-1/2 max-w-full -translate-x-1/2 sm:left-6 sm:translate-x-0"
-      style={{zIndex: 1000}}
+      className="absolute top-0 py-8 left-1/2 max-w-full -translate-x-1/2 w-fit"
+      style={{zIndex: 1001}}
     >
       <div className="relative flex items-center w-full ">
         <Input
@@ -174,7 +174,7 @@ export default function MapSearchBar({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           placeholder="Search places..."
-          className="bg-background dark:bg-background border-border/50 h-12 w-full rounded-full shadow-lg backdrop-blur-md transition-all focus-visible:ring-1 focus-visible:ring-offset-0"
+          className="bg-background dark:bg-background border-border/50 h-12 w-full rounded-2xl shadow-lg backdrop-blur-md transition-all focus-visible:ring-1 focus-visible:ring-offset-0"
           size={32}
         />
         {query ? (
