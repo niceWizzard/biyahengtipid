@@ -2,85 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Clock, X, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-export interface Place {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  address?: string;
-}
-
-// Emulate an API search
-const MOCK_PLACES: Place[] = [
-  {
-    id: '1',
-    name: 'Manila Cathedral',
-    latitude: 14.5916,
-    longitude: 120.9735,
-    address: 'Intramuros, Manila',
-  },
-  {
-    id: '2',
-    name: 'Rizal Park',
-    latitude: 14.5826,
-    longitude: 120.9787,
-    address: 'Ermita, Manila',
-  },
-  {
-    id: '3',
-    name: 'Fort Santiago',
-    latitude: 14.5941,
-    longitude: 120.9703,
-    address: 'Intramuros, Manila',
-  },
-  {
-    id: '4',
-    name: 'San Agustin Church',
-    latitude: 14.5888,
-    longitude: 120.975,
-    address: 'Intramuros, Manila',
-  },
-  {
-    id: '5',
-    name: 'National Museum of Fine Arts',
-    latitude: 14.5869,
-    longitude: 120.9812,
-    address: 'Ermita, Manila',
-  },
-  {
-    id: '6',
-    name: 'BGC High Street',
-    latitude: 14.5516,
-    longitude: 121.0503,
-    address: 'Taguig, Metro Manila',
-  },
-  {
-    id: '7',
-    name: 'Mall of Asia',
-    latitude: 14.535,
-    longitude: 120.9822,
-    address: 'Pasay City',
-  },
-];
-
-const mockSearch = async (query: string): Promise<Place[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (!query.trim()) {
-        resolve([]);
-        return;
-      }
-      const q = query.toLowerCase();
-      const results = MOCK_PLACES.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.address?.toLowerCase().includes(q)
-      );
-      resolve(results);
-    }, 500); // 500ms delay to emulate network
-  });
-};
+import { searchPlaces, type Place } from '@/lib/mapbox';
 
 export default function MapSearchBar({
   onSelect,
@@ -139,7 +61,7 @@ export default function MapSearchBar({
     let active = true;
 
     const timer = setTimeout(async () => {
-      const res = await mockSearch(query);
+      const res = await searchPlaces(query);
       if (active) {
         setResults(res);
         setIsLoading(false);

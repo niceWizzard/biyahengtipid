@@ -1,4 +1,5 @@
 const MAPBOX_DIRECTIONS_URL = 'https://api.mapbox.com/directions/v5/mapbox';
+const MAPBOX_SEARCH_URL = 'https://api.mapbox.com/search/searchbox/v1/forward';
 
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
 
@@ -176,4 +177,81 @@ export const fetchDirections = async (params: {
     waypoints: mergedWaypoints,
     uuid: responses[0].uuid,
   };
+};
+
+export interface MapboxSearchFeature {
+  type: 'Feature';
+  geometry: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  properties: {
+    name: string;
+    full_address?: string;
+    mapbox_id: string;
+    feature_type?: string;
+  };
+}
+
+export interface MapboxSearchResponse {
+  type: 'FeatureCollection';
+  features: MapboxSearchFeature[];
+}
+
+export interface Place {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address?: string;
+}
+
+export const searchPlaces = async (
+  query: string,
+  options?: {
+    proximity?: [number, number];
+    limit?: number;
+    accessToken?: string;
+  }
+): Promise<Place[]> => {
+  if (!query.trim()) {
+    return [];
+  }
+
+  try {
+    const url = new URL(MAPBOX_SEARCH_URL);
+    url.searchParams.set('q', query);
+    url.searchParams.set('access_token', options?.accessToken || ACCESS_TOKEN);
+    url.searchParams.set('limit', (options?.limit || 8).toString());
+
+    // Add proximity for location-based results (Philippines center)
+    if (options?.proximity) {
+      url.searchParams.set('proximity', options.proximity.join(','));
+    } else {
+      // Default to Philippines/Manila area for better results
+      url.searchParams.set('proximity', '120.9735,14.5916');
+    }
+
+    // Restrict to Philippines
+    url.searchParams.set('country', 'ph');
+
+    const response = await fetch(url.toString());
+
+    if (!response.ok) {
+      throw new Error(`Mapbox Search API error: ${response.statusText}`);
+    }
+
+    const data: MapboxSearchResponse = await response.json();
+
+    return data.features.map((feature) => ({
+      id: feature.properties.mapbox_id,
+      name: feature.properties.name,
+      address: feature.properties.full_address,
+      latitude: feature.geometry.coordinates[1],
+      longitude: feature.geometry.coordinates[0],
+    }));
+  } catch (error) {
+    console.error('Place search error:', error);
+    return [];
+  }
 };
